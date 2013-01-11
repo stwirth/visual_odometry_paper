@@ -6,8 +6,8 @@ all: paper.rst
 	pdflatex paper && \
 	bibtex paper && \
 	pdflatex paper && \
-	pdflatex paper && \
-	wc -w paper.rst
+	pdflatex paper 
+	./texcount.pl -brief -incbib paper.tex 
 
 clean:
 	rm -f paper.blg paper.bbl paper.aux paper.log paper.out paper.tex
