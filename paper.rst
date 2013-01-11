@@ -5,12 +5,13 @@
 
 Visual Odometry for Autonomous Underwater Vehicles
 ==================================================
+| *Stephan Wirth*
+| *Universitat de les Illes Balears*
+| *stephan.wirth@uib.es*
 
-+----------------------------------+----------------------------------+
-| Stephan Wirth                    | Pep Lluís Negre Carrasco         |
-| Universitat de les Illes Balears | Universitat de les Illes Balears |
-| stephan.wirth@uib.es             |                                  |
-+----------------------------------+----------------------------------+
+| *Pep Lluís Negre Carrasco*
+| *Universitat de les Illes Balears*
+| *pepllu.negre@gmail.com*
 
 Introduction
 ------------
