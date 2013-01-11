@@ -5,5 +5,9 @@ all: paper.rst
     sed -i 's/end{longtable/end{tabular/g' paper.tex && \
 	pdflatex paper && \
 	bibtex paper && \
-	pdflatex paper
+	pdflatex paper && \
+	pdflatex paper && \
 	wc -w paper.rst
+
+clean:
+	rm -f paper.blg paper.bbl paper.aux paper.log paper.out paper.tex
