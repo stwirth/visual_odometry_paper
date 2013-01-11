@@ -19,7 +19,7 @@ Vision based localization, mapping and motion estimation algorithms are widely u
 
 Odometry Framework
 ------------------
-The visual odometry system we choose is based on stereo images and follows :raw-tex:`\cite{libviso2}`. The processing pipeline contains five consecutive steps: image acquisition, preprocessing, feature extraction, feature matching, and motion estimation. 
+The visual odometry system we choose is based on stereo images and follows :raw-tex:`\cite{Geiger2011}`. The processing pipeline contains five consecutive steps: image acquisition, preprocessing, feature extraction, feature matching, and motion estimation. 
 
 Image Acquisition
 
