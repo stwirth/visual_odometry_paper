@@ -76,7 +76,7 @@ As visual odometry suffers from drift, comparing whole trajectories, i.e. poses 
 
 Experiment Results
 ------------------
-.. figure:: G500-Experiments.jpg
+.. figure:: images/G500-Experiments.jpg
   :width: 100 % 
 
   :label:`g500` The Girona 500 AUV during laboratory and harbour experiments. The white box in the front of the lower part is the stereo camera. The cylinder right next to it contains the image processing unit.
