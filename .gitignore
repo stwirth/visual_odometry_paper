@@ -8,3 +8,6 @@ paper.bbl
 paper.blg
 paper.dvi
 paper.ps
+paper.tex-e
+data/*.pdf
+data/*.eps
