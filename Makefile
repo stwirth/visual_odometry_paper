@@ -2,7 +2,7 @@ datafiles:=$(wildcard data/*.txt)
 plotscripts:=$(wildcard plots/*.gp)
 eps:=$(wildcard data/*.eps)
 
-all: ploteps paper.txt
+all: epspdf paper.txt
 	rst2latex \
     --documentclass='IEEEtran' --exit-status=3 paper.txt paper.tex && \
     sed -i -e 's/begin{longtable/begin{tabular/g' paper.tex && \
@@ -20,10 +20,12 @@ ploteps: $(datafiles) $(plotscripts)
 	    FILE=$$d gnuplot $$p ; \
 	  done ; \
 	done
+
+epspdf: ploteps
 	for f in $(shell ls data/*.eps) ; do \
 	  epstopdf $$f ; \
 	done
 
 .PHONY: clean
 clean:
-	rm -f paper.blg paper.bbl paper.aux paper.log paper.out paper.tex data/*.eps data/*.pdf
+	rm -f paper.tex-e paper.blg paper.bbl paper.aux paper.log paper.out paper.tex data/*.eps data/*.pdf
