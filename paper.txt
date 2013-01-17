@@ -94,11 +94,11 @@ For the harbour experiment, the determination of ground truth is more difficult,
 
 The AUV was configured to not control pitch, roll and sway. Motions in these degrees of freedom are therefore rather small and we cannot compute reasonable error measures for them.
 
-TODO: describe experiments (visibility conditions, programmed trajectories, example images)
+TODO: describe experiments (visibility conditions, programmed trajectories (length, velocities..))
 
 
 
-.. figure:: data/roses-vyaw.pdf
+.. figure:: aux/roses-vyaw.pdf
   :width: 100 % 
 
   :label:`vyaw-roses` Velocity error for rotations about the vehicle's vertical axis.

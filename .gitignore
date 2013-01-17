@@ -9,5 +9,4 @@ paper.blg
 paper.dvi
 paper.ps
 paper.tex-e
-data/*.pdf
-data/*.eps
+aux/
