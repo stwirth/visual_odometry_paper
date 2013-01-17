@@ -4,7 +4,7 @@ set term postscript color size 6,4.5
 set output "`echo $OUTFILE`"
 set view equal xyz
 set title "Trajectories"
-set style line 1 lt 1 lc rgb "green" lw 1
+set style line 1 lt 1 lc rgb "red" lw 1
 set xlabel "X [m]"
 set ylabel "Y [m]"
 set zlabel "Z [m]"
