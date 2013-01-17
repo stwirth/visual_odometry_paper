@@ -113,15 +113,30 @@ TODO: describe experiments (visibility conditions, programmed trajectories (leng
 .. 3D Reconstruction
 .. ^^^^^^^^^^^^^^^^^
 
+TODO: insert table with experiment details
+
+TODO: insert plots
+
+TODO: insert table with error measurements
+
+TODO: create nice 3D views of reconstructed tire from roses (and blackbox from cirs?)
+
+.. generating nice latex tables like this does not work :(
+.. +-------------------+-------------------+----------------+ 
+  | Header 1          | CIRS Laboratory   | Roses Harbour  | 
+  +===================+===================+================+ 
+  | Trajectory Length | column 2          | column 3       | 
+  +-------------------+-------------------+----------------+ 
+  | Average Velocity  | ??m/s             | ??m/s          | 
+  +-------------------+-------------------+----------------+ 
+
+
 Conclusion
 ----------
 
-.. - Not suitable for long term pose estimation due to drift and possible failure, but as aid for information filter
-.. - Very good rotation estimates for rotations around the optical axis
-.. - Highest errors in pitch and roll estimation (as expected)
-.. - Useful for online (!) 3D reconstruction of small areas
-
 Visual odometry is a method for motion estimation that gives good results using a low-cost sensor in reasonable conditions. We have shown that it can be used in an underwater environment if both the visibility conditions and the appearance of the sea floor result in images with sufficient texture. Like all incremental motion estimation methods, visual odometry suffers from drift and has to be combined with other sensors to get precise long-term position estimates. Apart from that, failure might occur in situations with insufficient texture, motion blur, or bad visibility. One important feature of the system is that it detects the failures and can signal them to higher level processing units.
+
+Despite the mentioned drawbacks we have shown that a visual odometer using a downward looking stereo camera can be a valuable sensor for underwater vehicles giving good estimates for linear movement and rotation about the vehicle's vertical axis. We have shown that the precision and speed of the presented system is sufficient for the reconstruction and visualization of small 3D environments.
 
 .. raw:: latex
 
