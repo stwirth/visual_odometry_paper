@@ -32,7 +32,7 @@ Visual Odometry for Autonomous Underwater Vehicles
 
 Introduction
 ------------
-Vision based localization, mapping and motion estimation algorithms are widely used in ground-based and aerial robotics. They have proven to be a precise and low-cost alternative to inertial measurement units and laser scanners. In this paper we show that vision based odometry can be used by autonomous underwater vehicles (AUVs) that navigate close to the seabed for incremental pose estimation and 3D reconstruction of small areas. We present the integration of a stereo visual odometry system into two AUVs. Furthermore we present experiments carried out in laboratory and harbour conditions comparing vision based pose estimates with ground truth and DVL measurements.
+Vision based localization, mapping and motion estimation algorithms are widely used in ground-based and aerial robotics. They have proven to be a precise and low-cost alternative to inertial measurement units and laser scanners. In this paper we show that vision based odometry can be used by autonomous underwater vehicles (AUVs) that navigate close to the seabed for incremental pose estimation and 3D reconstruction of small areas. We present the integration of a stereo visual odometry system into two AUVs. Furthermore we present experiments carried out in laboratory and harbour conditions comparing vision based pose estimates with ground truth.
 
 Visual Odometry System
 ----------------------
@@ -81,7 +81,13 @@ Experiment Results
 
   :label:`g500` The Girona 500 AUV during laboratory and harbour experiments. The white box in the front of the lower part is the stereo camera. The cylinder right next to it contains the image processing unit.
 
-The experiments carried out use data gathered during the TRIDENT project [#]_ both in laboratory and harbour conditions using the Girona500 AUV :raw-tex:`\cite{Ribas2012}` as vehicle (Figure :ref:`g500`). Figure ?? shows some example images from both sequences. Ground truth for the laboratory experiment is extracted by matching each image that has been captured against the known image that is printed on the floor of the test pool.
+The experiments carried out use data gathered during the TRIDENT project [#]_ both in laboratory and harbour conditions using the Girona500 AUV :raw-tex:`\cite{Ribas2012}` as vehicle (Figure :ref:`g500`). Figure :ref:`sample-images` shows some example images from both sequences. Ground truth for the laboratory experiment is extracted by matching each image that has been captured against the known image that is printed on the floor of the test pool.
+
+.. figure:: images/sample_images.jpg
+  :width: 100 % 
+
+  :label:`sample-images` Sample images from the sequences during the laboratory (top row) and harbour (bottom row) experiments.
+
 For the harbour experiment, the determination of ground truth is more difficult, as no external sensors have been used and positions of natural landmarks are not known. One aim of the project was the construction of a consistent seabed mosaic. The computation of this mosaic includes global optimization of all camera poses. The resulting trajectory does not suffer from drift and is therefore chosen as our ground truth reference.
 
 .. [#] see http://www.irs.uji.es/trident/
