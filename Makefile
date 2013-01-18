@@ -30,7 +30,7 @@ aux:
 .DEFAULT_GOAL:=all
 all: aux $(generated_pdfs) paper.txt
 	rst2latex \
-    --documentclass='IEEEtran' --exit-status=3 paper.txt paper.tex && \
+    --exit-status=3 paper.txt paper.tex && \
     sed -i -e 's/begin{longtable/begin{tabular/g' paper.tex && \
     sed -i -e 's/end{longtable/end{tabular/g' paper.tex && \
     sed -i -e 's/textwidth/linewidth/g' paper.tex && \

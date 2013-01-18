@@ -21,17 +21,10 @@
 
 Visual Odometry for Autonomous Underwater Vehicles
 ==================================================
-| *Stephan Wirth*
-| *Universitat de les Illes Balears*
-| *stephan.wirth@uib.es*
 
-| *Pep Lluís Negre Carrasco*
+| *Stephan Wirth, Pep Lluis Negre Carrasco, Gabriel Oliver Codina*
 | *Universitat de les Illes Balears*
-| *pepllu.negre@gmail.com*
-
-| *Gabriel Oliver Codina*
-| *Universitat de les Illes Balears*
-| *goliver@uib.cat*
+| *stephan.wirth@uib.es, pepluu.negre@gmail.com, goliver@uib.cat*
 
 
 Introduction
@@ -80,6 +73,27 @@ Evaluation Method
 
 As visual odometry suffers from drift, comparing whole trajectories, i.e. poses in time directly to ground truth is not very meaningful. Instead, we subdivide the path into small pieces and compare relative transformations for each piece to the matching piece in our ground truth. We evaluate both translation and rotation errors.
 
+.. raw:: latex
+
+  \begin{figure*}
+  \centering
+  \subfloat[][]{
+    \includegraphics[width=0.24\textwidth]{aux/cirs-timefixed-run3-vt.pdf}
+  }
+  \subfloat[][]{
+    \includegraphics[width=0.24\textwidth]{aux/roses-vt.pdf}
+  }
+  \subfloat[][]{
+    \includegraphics[width=0.24\textwidth]{aux/cirs-timefixed-run3-vyaw.pdf}
+  }
+  \subfloat[][]{
+    \includegraphics[width=0.24\textwidth]{aux/roses-vyaw.pdf}
+  }
+  \caption{Linear velocity estimates compared to ground truth for the laboratory (a) and the harbour (b) experiments and the respective angular velocity measures (c) and (d)}
+  \label{error-plots}
+  \end{figure*}
+
+
 Experimental Setup
 ------------------
 .. figure:: images/G500-Experiments.jpg
@@ -116,32 +130,12 @@ The AUV was configured to not control pitch, roll and sway. Motions in these deg
   \end{table}
 
 
+
+
 Results
 -------
 
-A comparison of linear and angular velocity estimates to ground truth can be found in Figure ??. Table :ref:`error-meas` gives detailed error measurements.
-
-.. figure:: aux/cirs-timefixed-run3-vyaw.pdf
-  :width: 100 % 
-
-  :label:`vyaw-cirs` Angular velocity about the vehicle's vertical axis (yaw) for the laboratory experiment.
-
-.. figure:: aux/roses-vyaw.pdf
-  :width: 100 % 
-
-  :label:`vyaw-roses` Angular velocity about the vehicle's vertical axis (yaw) for the harbour experiment.
-
-.. figure:: aux/cirs-timefixed-run3-vt.pdf
-  :width: 100 % 
-
-  :label:`vt-cirs` Linear velocity during the laboratory experiment.
-
-.. figure:: aux/roses-vt.pdf
-  :width: 100 % 
-
-  :label:`vt-roses` Linear velocitiy during the harbour experiment.
-
-
+A comparison of linear and angular velocity estimates to ground truth can be found in Figure :ref:`error-plots`. Table :ref:`error-meas` gives detailed error measurements.
 
 .. CIRS Lab
 .. ^^^^^^^^
