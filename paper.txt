@@ -91,7 +91,7 @@ For the harbour experiment, the determination of ground truth is more difficult,
 
 .. [#] see http://www.irs.uji.es/trident/
 
-Using a DVL and an AHS as navigation sensors the vehicle followed a previously defined trajectory autonomously. Table ?? summarizes the characteristics of the experimental runs.
+In the harbour experiment, a DVL and an AHS have been used as navigation sensors to let the vehicle follow a previously defined trajectory autonomously. In the laboratory experiments, the vehicle has been controlled by a human operator remotely. Table ?? summarizes the characteristics of the experiments.
 The AUV was configured to not control pitch, roll and sway. Motions in these degrees of freedom are therefore rather small and we cannot compute reasonable error measures for them.
 
 .. figure:: aux/cirs-timefixed-run3-vyaw.pdf
