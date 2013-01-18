@@ -19,7 +19,6 @@
   \newcommand*{\docutilsrolelabel}{\label}
 
 
-
 Visual Odometry for Autonomous Underwater Vehicles
 ==================================================
 | *Stephan Wirth*
@@ -92,16 +91,29 @@ For the harbour experiment, the determination of ground truth is more difficult,
 
 .. [#] see http://www.irs.uji.es/trident/
 
+Using a DVL and an AHS as navigation sensors the vehicle followed a previously defined trajectory autonomously. Table ?? summarizes the characteristics of the experimental runs.
 The AUV was configured to not control pitch, roll and sway. Motions in these degrees of freedom are therefore rather small and we cannot compute reasonable error measures for them.
 
-TODO: describe experiments (visibility conditions, programmed trajectories (length, velocities..))
+.. figure:: aux/cirs-timefixed-run3-vyaw.pdf
+  :width: 100 % 
 
-
+  :label:`vyaw-cirs` Angular velocity about the vehicle's vertical axis (yaw) for the laboratory experiment.
 
 .. figure:: aux/roses-vyaw.pdf
   :width: 100 % 
 
-  :label:`vyaw-roses` Velocity error for rotations about the vehicle's vertical axis.
+  :label:`vyaw-roses` Angular velocity about the vehicle's vertical axis (yaw) for the harbour experiment.
+
+.. figure:: aux/cirs-timefixed-run3-vt.pdf
+  :width: 100 % 
+
+  :label:`vt-cirs` Linear velocity during the laboratory experiment.
+
+.. figure:: aux/roses-vt.pdf
+  :width: 100 % 
+
+  :label:`vt-roses` Linear velocitiy during the harbour experiment.
+
 
 
 .. CIRS Lab
@@ -119,8 +131,6 @@ TODO: describe experiments (visibility conditions, programmed trajectories (leng
   \begin{tabular}{l*{3}{c}r}
   & \textbf{CIRS Lab} & \textbf{Roses Harbour}  \\
   \hline
-  \endfirsthead
-  \hline
   Total Trajectory Length (m)     & 47.54 & 90.48  \\[3pt]
   Average Velocity (m/s)          & 0.15 & 0.12  \\[3pt]
   Average Altitude (m)            & 1.59 & TODO  \\[3pt]
@@ -136,8 +146,6 @@ TODO: describe experiments (visibility conditions, programmed trajectories (leng
   \begin{tabular}{l*{3}{c}r}
   & \textbf{CIRS Lab} & \textbf{Roses Harbour}  \\
   \hline
-  \endfirsthead
-  \hline
   Translation Error (m)       & 47.54 & 90.48  \\[3pt]
   Rotational Yaw Error (m/s)  & 0.15 & 0.12  \\[3pt]
   \end{tabular}
@@ -145,9 +153,7 @@ TODO: describe experiments (visibility conditions, programmed trajectories (leng
   \end{table}
 
 
-TODO: insert plots
-
-TODO: create nice 3D views of reconstructed tire from roses (and blackbox from cirs?)
+.. TODO for full paper: create nice 3D views of reconstructed tire from roses (and blackbox from cirs?)
 
 
 Conclusion
