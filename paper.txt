@@ -29,14 +29,20 @@ Visual Odometry for Autonomous Underwater Vehicles
 | *Universitat de les Illes Balears*
 | *pepllu.negre@gmail.com*
 
+| *Gabriel Oliver Codina*
+| *Universitat de les Illes Balears*
+| *goliver@uib.cat*
+
+
 Introduction
 ------------
-Vision based localization, mapping and motion estimation algorithms are widely used in ground-based and aerial robotics. They have proven to be a precise and low-cost alternative to inertial measurement units and laser scanners. In this paper we show that vision based odometry can be used by autonomous underwater vehicles (AUVs) that navigate close to the seabed for incremental pose estimation and 3D reconstruction of small areas. We present the integration of a stereo visual odometry system into two AUVs. Furthermore we present experiments carried out in laboratory and harbour conditions comparing vision based pose estimates with ground truth.
+Vision based localization, mapping and motion estimation algorithms are widely used in ground-based and aerial robotics. They have proven to be a precise and low-cost alternative to inertial measurement units and laser scanners. In this paper we show that stereo vision based odometry can be used by autonomous underwater vehicles (AUVs) that navigate close to the seabed for incremental pose estimation and 3D reconstruction of small areas. We present the integration of a stereo visual odometry system into an AUV and experiments carried out in laboratory and harbour conditions comparing vision based pose estimates with ground truth.
 
 Visual Odometry System
 ----------------------
 The first choice to make for setting up a visual odometry system is the type of cameras to use. For a stereo camera system, one can choose between a fixed system that contains two cameras in one case and a custom made system of two single cameras. While the latter is more flexible as one can adapt the baseline the former is easier to integrate as synchronization and alignment are optimized by the manufacturer.
 We use a standard stereo camera with a custom waterproof housing.
+
 The visual odometry software we choose is based on *libviso2* :raw-tex:`\cite{Geiger2011}`. The processing pipeline contains five consecutive steps:
 
 1. Image Acquisition
@@ -48,7 +54,6 @@ The visual odometry software we choose is based on *libviso2* :raw-tex:`\cite{Ge
 *libviso2* covers steps 3 to 5. We added an open source wrapper for this library [#]_ to integrate it into the Robot Operating System ROS :raw-tex:`\cite{Quigley2009}`. This simplifies the integration in different robotic vehicles as well as comparison with other integrated sensors. For step 2 we use the OpenCV library :raw-tex:`\cite{Bradski2000}` functions that are integrated in ROS and step 1 is done by a custom stereo camera driver.
 
 .. [#] See http://www.ros.org/viso2_ros for source code and documentation.
-
 
 .. Image Acquisition
 
@@ -71,16 +76,18 @@ The visual odometry software we choose is based on *libviso2* :raw-tex:`\cite{Ge
 Evaluation Method
 -----------------
 
-As visual odometry suffers from drift, comparing whole trajectories, i.e. poses in time directly to ground truth is not very meaningful. Instead, we subdivide the path into small pieces and compare relative transformations for each piece to the matching piece in our ground truth. We evaluate translation and rotation error for three degrees of freedom.
+.. possibly add reference to KITTI benchmark here
 
-Experiment Results
+As visual odometry suffers from drift, comparing whole trajectories, i.e. poses in time directly to ground truth is not very meaningful. Instead, we subdivide the path into small pieces and compare relative transformations for each piece to the matching piece in our ground truth. We evaluate both translation and rotation errors.
+
+Experimental Setup
 ------------------
 .. figure:: images/G500-Experiments.jpg
   :width: 100 % 
 
   :label:`g500` The Girona 500 AUV during laboratory and harbour experiments. The white box in the front of the lower part is the stereo camera. The cylinder right next to it contains the image processing unit.
 
-The experiments carried out use data gathered during the TRIDENT project [#]_ both in laboratory and harbour conditions using the Girona500 AUV :raw-tex:`\cite{Ribas2012}` as vehicle (Figure :ref:`g500`). Figure :ref:`sample-images` shows some example images from both sequences. Ground truth for the laboratory experiment is extracted by matching each image that has been captured against the known image that is printed on the floor of the test pool.
+The experiments carried out use data gathered during the TRIDENT project [#]_ both in laboratory and harbour conditions using the Girona500 AUV :raw-tex:`\cite{Ribas2012}` as vehicle (Figure :ref:`g500`). Figure :ref:`sample-images` shows some example images from both sequences. Ground truth for the laboratory experiment is extracted by matching each image that has been captured against the known image that is printed on the floor of the test pool. As the size of the print is known, 6 DOF camera poses can be computed minimizing feature reprojection errors.
 
 .. figure:: images/sample_images.jpg
   :width: 100 % 
@@ -91,8 +98,28 @@ For the harbour experiment, the determination of ground truth is more difficult,
 
 .. [#] see http://www.irs.uji.es/trident/
 
-In the harbour experiment, a DVL and an AHS have been used as navigation sensors to let the vehicle follow a previously defined trajectory autonomously. In the laboratory experiments, the vehicle has been controlled by a human operator remotely. Table ?? summarizes the characteristics of the experiments.
+In the harbour experiment, a DVL and an AHS have been used as navigation sensors to let the vehicle follow a previously defined trajectory autonomously. In the laboratory experiments, the vehicle has been remotely controlled by a human operator. Table :ref:`experiment-details` summarizes the characteristics of the experiments.
 The AUV was configured to not control pitch, roll and sway. Motions in these degrees of freedom are therefore rather small and we cannot compute reasonable error measures for them.
+
+.. raw:: latex
+
+  \begin{table}[h]
+  \begin{tabular}{l*{3}{c}r}
+  & \textbf{CIRS Lab} & \textbf{Roses Harbour}  \\
+  \hline
+  Total Trajectory Length (m)     & 47.54 & 90.48  \\[3pt]
+  Average Velocity (m/s)          & 0.15 & 0.12  \\[3pt]
+  Average Altitude (m)            & 1.59 & 1.34  \\[3pt]
+  Average Depth (m)               & 2.98 & 1.46  \\[3pt]
+  \end{tabular}
+  \caption{\DUrole{label}{experiment-details} Experiment details}
+  \end{table}
+
+
+Results
+-------
+
+A comparison of linear and angular velocity estimates to ground truth can be found in Figure ??. Table :ref:`error-meas` gives detailed error measurements.
 
 .. figure:: aux/cirs-timefixed-run3-vyaw.pdf
   :width: 100 % 
@@ -125,20 +152,6 @@ The AUV was configured to not control pitch, roll and sway. Motions in these deg
 .. 3D Reconstruction
 .. ^^^^^^^^^^^^^^^^^
 
-.. raw:: latex
-
-  \begin{table}[h]
-  \begin{tabular}{l*{3}{c}r}
-  & \textbf{CIRS Lab} & \textbf{Roses Harbour}  \\
-  \hline
-  Total Trajectory Length (m)     & 47.54 & 90.48  \\[3pt]
-  Average Velocity (m/s)          & 0.15 & 0.12  \\[3pt]
-  Average Altitude (m)            & 1.59 & 1.34  \\[3pt]
-  Average Depth (m)               & 2.98 & 1.46  \\[3pt]
-  \end{tabular}
-  \caption{\DUrole{label}{experiments-details} Experiments Details.}
-  \end{table}
-
 
 .. raw:: latex
 
@@ -149,7 +162,7 @@ The AUV was configured to not control pitch, roll and sway. Motions in these deg
   Translation Error (m)       & 0.056 & 0.471  \\[3pt]
   Rotational Yaw Error (m/s)  & 0.003 & 0.001  \\[3pt]
   \end{tabular}
-  %\caption{\DUrole{label}{error-meas} Average absolute errors in velocities.}
+  \caption{\DUrole{label}{error-meas} Average absolute errors in velocities.}
   \end{table}
 
 
