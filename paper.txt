@@ -24,7 +24,7 @@ Visual Odometry for Autonomous Underwater Vehicles
 
 | *Stephan Wirth, Pep Lluis Negre Carrasco, Gabriel Oliver Codina*
 | *Universitat de les Illes Balears*
-| *stephan.wirth@uib.es, pepluu.negre@gmail.com, goliver@uib.cat*
+| *stephan.wirth@uib.es, pepllu.negre@gmail.com, goliver@uib.cat*
 
 
 Introduction
@@ -76,25 +76,26 @@ As visual odometry suffers from drift, comparing whole trajectories, i.e. poses 
 .. raw:: latex
 
   \begin{figure*}
-  \centering
-  \subfloat[][]{
-    \includegraphics[width=0.24\textwidth]{aux/cirs-timefixed-run3-vt.pdf}
+  \begin{center}
+  \subfloat[]{
+  \begin{tabular}{c}
+  \includegraphics[width=0.3\textwidth]{aux/cirs-timefixed-run3-vt.pdf}\\
+  \includegraphics[width=0.3\textwidth]{aux/roses-vt.pdf}
+  \end{tabular}
   }
-  \subfloat[][]{
-    \includegraphics[width=0.24\textwidth]{aux/roses-vt.pdf}
+  \subfloat[]{
+  \begin{tabular}{c}
+  \includegraphics[width=0.3\textwidth]{aux/cirs-timefixed-run3-vyaw.pdf}\\
+  \includegraphics[width=0.3\textwidth]{aux/roses-vyaw.pdf}
+  \end{tabular}
   }
-  \subfloat[][]{
-    \includegraphics[width=0.24\textwidth]{aux/cirs-timefixed-run3-vyaw.pdf}
-  }
-  \subfloat[][]{
-    \includegraphics[width=0.24\textwidth]{aux/roses-vyaw.pdf}
-  }
-  \caption{Linear velocity estimates compared to ground truth for the laboratory (a) and the harbour (b) experiments and the respective angular velocity measures (c) and (d)}
+  \end{center}
+  \caption{Linear (a) and angular (b) velocity estimates compared to ground truth for the laboratory (top) and the harbour (bottom) experiments.}
   \label{error-plots}
   \end{figure*}
 
 
-Experimental Setup
+Experiments
 ------------------
 .. figure:: images/G500-Experiments.jpg
   :width: 100 % 
@@ -108,7 +109,7 @@ The experiments carried out use data gathered during the TRIDENT project [#]_ bo
 
   :label:`sample-images` Sample images from the sequences during the laboratory (top row) and harbour (bottom row) experiments.
 
-For the harbour experiment, the determination of ground truth is more difficult, as no external sensors have been used and positions of natural landmarks are not known. One aim of the project was the construction of a consistent seabed mosaic. The computation of this mosaic includes global optimization of all camera poses. The resulting trajectory does not suffer from drift and is therefore chosen as our ground truth reference.
+For the harbour experiment, the determination of ground truth is more difficult, as no external sensors have been used and positions of natural landmarks are not known. One aim of the project was the construction of a consistent seabed mosaic (see :raw-tex:`\cite{Ferrer2007}`). The computation of this mosaic includes global optimization of all camera poses. The resulting trajectory does not suffer from drift and is therefore chosen as our ground truth reference.
 
 .. [#] see http://www.irs.uji.es/trident/
 
@@ -130,34 +131,7 @@ The AUV was configured to not control pitch, roll and sway. Motions in these deg
   \end{table}
 
 
-
-
-Results
--------
-
-A comparison of linear and angular velocity estimates to ground truth can be found in Figure :ref:`error-plots`. Table :ref:`error-meas` gives detailed error measurements.
-
-.. CIRS Lab
-.. ^^^^^^^^
-
-.. Roses Harbour
-.. ^^^^^^^^^^^^^
-
-.. 3D Reconstruction
-.. ^^^^^^^^^^^^^^^^^
-
-
-.. raw:: latex
-
-  \begin{table}[h]
-  \begin{tabular}{l*{3}{c}r}
-  & \textbf{CIRS Lab} & \textbf{Roses Harbour}  \\
-  \hline
-  Translation Error (m)       & 0.056 & 0.471  \\[3pt]
-  Rotational Yaw Error (m/s)  & 0.003 & 0.001  \\[3pt]
-  \end{tabular}
-  \caption{\DUrole{label}{error-meas} Average absolute errors in velocities.}
-  \end{table}
+A comparison of linear velocity estimates to ground truth can be found in Figure :ref:`error-plots`. Note that the estimated angular velocities hardly differ from the ground truth though the whole path.
 
 
 .. TODO for full paper: create nice 3D views of reconstructed tire from roses (and blackbox from cirs?)
@@ -168,7 +142,9 @@ Conclusion
 
 Visual odometry is a method for motion estimation that gives good results using a low-cost sensor in reasonable conditions. We have shown that it can be used in an underwater environment if both the visibility conditions and the appearance of the sea floor result in images with sufficient texture. Like all incremental motion estimation methods, visual odometry suffers from drift and has to be combined with other sensors to get precise long-term position estimates. Apart from that, failure might occur in situations with insufficient texture, motion blur, or bad visibility. One important feature of the system is that it detects the failures and can signal them to higher level processing units.
 
-Despite the mentioned drawbacks we have shown that a visual odometer using a downward looking stereo camera can be a valuable sensor for underwater vehicles giving good estimates for linear movement and rotation about the vehicle's vertical axis. We have shown that the precision and speed of the presented system is sufficient for the reconstruction and visualization of small 3D environments.
+Despite the mentioned drawbacks we have shown that a visual odometer using a downward looking stereo camera can be a valuable sensor for underwater vehicles giving good estimates for linear movement and rotation about the vehicle's vertical axis. 
+
+.. We have shown that the precision and speed of the presented system is sufficient for the reconstruction and visualization of small 3D environments.
 
 .. raw:: latex
 
