@@ -146,8 +146,8 @@ The AUV was configured to not control pitch, roll and sway. Motions in these deg
   \begin{tabular}{l*{3}{c}r}
   & \textbf{CIRS Lab} & \textbf{Roses Harbour}  \\
   \hline
-  Translation Error (m)       & 47.54 & 90.48  \\[3pt]
-  Rotational Yaw Error (m/s)  & 0.15 & 0.12  \\[3pt]
+  Translation Error (m)       & 0.056 & 0.471  \\[3pt]
+  Rotational Yaw Error (m/s)  & 0.003 & 0.001  \\[3pt]
   \end{tabular}
   %\caption{\DUrole{label}{error-meas} Average absolute errors in velocities.}
   \end{table}
