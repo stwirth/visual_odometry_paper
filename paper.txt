@@ -133,10 +133,10 @@ The AUV was configured to not control pitch, roll and sway. Motions in these deg
   \hline
   Total Trajectory Length (m)     & 47.54 & 90.48  \\[3pt]
   Average Velocity (m/s)          & 0.15 & 0.12  \\[3pt]
-  Average Altitude (m)            & 1.59 & TODO  \\[3pt]
-  Average Depth (m)               & 2.98 & TODO  \\[3pt]
+  Average Altitude (m)            & 1.59 & 1.34  \\[3pt]
+  Average Depth (m)               & 2.98 & 1.46  \\[3pt]
   \end{tabular}
-  %\caption{\DUrole{label}{experiments-details} Experiments Details.}
+  \caption{\DUrole{label}{experiments-details} Experiments Details.}
   \end{table}
 
 
