@@ -71,7 +71,7 @@ Evaluation Method
 
 .. possibly add reference to KITTI benchmark here
 
-As visual odometry suffers from drift, comparing whole trajectories, i.e. poses in time directly to ground truth is not very meaningful. Instead, we subdivide the path into small pieces and compare relative transformations for each piece to the matching piece in our ground truth. We evaluate both translation and rotation errors.
+As visual odometry suffers from drift, comparing whole trajectories, i.e. poses in time directly to ground truth is not very meaningful. Instead, we subdivide the path into small pieces and compare velocities for each piece to the matching piece in our ground truth. We evaluate both translation and rotation errors.
 
 .. raw:: latex
 
@@ -79,14 +79,14 @@ As visual odometry suffers from drift, comparing whole trajectories, i.e. poses 
   \begin{center}
   \subfloat[]{
   \begin{tabular}{c}
-  \includegraphics[width=0.3\textwidth]{aux/cirs-timefixed-run3-vt.pdf}\\
-  \includegraphics[width=0.3\textwidth]{aux/roses-vt.pdf}
+  \includegraphics[width=0.45\textwidth]{aux/cirs-timefixed-run3-vt.pdf}\\
+  \includegraphics[width=0.45\textwidth]{aux/roses-vt.pdf}
   \end{tabular}
   }
   \subfloat[]{
   \begin{tabular}{c}
-  \includegraphics[width=0.3\textwidth]{aux/cirs-timefixed-run3-vyaw.pdf}\\
-  \includegraphics[width=0.3\textwidth]{aux/roses-vyaw.pdf}
+  \includegraphics[width=0.45\textwidth]{aux/cirs-timefixed-run3-vyaw.pdf}\\
+  \includegraphics[width=0.45\textwidth]{aux/roses-vyaw.pdf}
   \end{tabular}
   }
   \end{center}
@@ -96,7 +96,7 @@ As visual odometry suffers from drift, comparing whole trajectories, i.e. poses 
 
 
 Experiments
-------------------
+-----------
 .. figure:: images/G500-Experiments.jpg
   :width: 100 % 
 
@@ -114,7 +114,11 @@ For the harbour experiment, the determination of ground truth is more difficult,
 .. [#] see http://www.irs.uji.es/trident/
 
 In the harbour experiment, a DVL and an AHS have been used as navigation sensors to let the vehicle follow a previously defined trajectory autonomously. In the laboratory experiments, the vehicle has been remotely controlled by a human operator. Table :ref:`experiment-details` summarizes the characteristics of the experiments.
+
 The AUV was configured to not control pitch, roll and sway. Motions in these degrees of freedom are therefore rather small and we cannot compute reasonable error measures for them.
+
+A comparison of linear velocity estimates to ground truth can be found in Figure :ref:`error-plots`. Note that the estimated angular velocities hardly differ from the ground truth through the whole path.
+
 
 .. raw:: latex
 
@@ -129,9 +133,6 @@ The AUV was configured to not control pitch, roll and sway. Motions in these deg
   \end{tabular}
   \caption{\DUrole{label}{experiment-details} Experiment details}
   \end{table}
-
-
-A comparison of linear velocity estimates to ground truth can be found in Figure :ref:`error-plots`. Note that the estimated angular velocities hardly differ from the ground truth though the whole path.
 
 
 .. TODO for full paper: create nice 3D views of reconstructed tire from roses (and blackbox from cirs?)

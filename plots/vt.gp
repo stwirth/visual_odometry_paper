@@ -1,5 +1,5 @@
 set grid
-set term postscript enhanced eps color size 3.4869,2.6152
+set term postscript enhanced eps color size 5.0,2.6152
 set output "`echo $OUTFILE`"
 set xlabel "t [s]"
 set ylabel "v [m/s]"
