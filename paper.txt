@@ -113,22 +113,41 @@ TODO: describe experiments (visibility conditions, programmed trajectories (leng
 .. 3D Reconstruction
 .. ^^^^^^^^^^^^^^^^^
 
-TODO: insert table with experiment details
+.. raw:: latex
+
+  \begin{table}[h]
+  \begin{tabular}{l*{3}{c}r}
+  & \textbf{CIRS Lab} & \textbf{Roses Harbour}  \\
+  \hline
+  \endfirsthead
+  \hline
+  Total Trajectory Length (m)     & 47.54 & 90.48  \\[3pt]
+  Average Velocity (m/s)          & 0.15 & 0.12  \\[3pt]
+  Average Altitude (m)            & 1.59 & TODO  \\[3pt]
+  Average Depth (m)               & 2.98 & TODO  \\[3pt]
+  \end{tabular}
+  %\caption{\DUrole{label}{experiments-details} Experiments Details.}
+  \end{table}
+
+
+.. raw:: latex
+
+  \begin{table}[h]
+  \begin{tabular}{l*{3}{c}r}
+  & \textbf{CIRS Lab} & \textbf{Roses Harbour}  \\
+  \hline
+  \endfirsthead
+  \hline
+  Translation Error (m)       & 47.54 & 90.48  \\[3pt]
+  Rotational Yaw Error (m/s)  & 0.15 & 0.12  \\[3pt]
+  \end{tabular}
+  %\caption{\DUrole{label}{error-meas} Average absolute errors in velocities.}
+  \end{table}
+
 
 TODO: insert plots
 
-TODO: insert table with error measurements
-
 TODO: create nice 3D views of reconstructed tire from roses (and blackbox from cirs?)
-
-.. generating nice latex tables like this does not work :(
-.. +-------------------+-------------------+----------------+ 
-  | Header 1          | CIRS Laboratory   | Roses Harbour  | 
-  +===================+===================+================+ 
-  | Trajectory Length | column 2          | column 3       | 
-  +-------------------+-------------------+----------------+ 
-  | Average Velocity  | ??m/s             | ??m/s          | 
-  +-------------------+-------------------+----------------+ 
 
 
 Conclusion
