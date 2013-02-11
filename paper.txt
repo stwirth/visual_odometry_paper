@@ -27,44 +27,51 @@ Visual Odometry for Autonomous Underwater Vehicles
 | *stephan.wirth@uib.es, pepllu.negre@gmail.com, goliver@uib.cat*
 
 
+Abstract
+--------
+Vision based motion estimation algorithms are widely used in ground-based and aerial robotics. Combined with inertial measurement units, they have proven to be a precise and low-cost sensor for velocity and pose estimation. In this paper we show that stereo vision based odometry can be used by autonomous underwater vehicles (AUVs) that navigate close to the seabed for incremental pose estimation and 3D reconstruction of small areas. We present the integration of two different stereo visual odometry algorithms into an AUV and experiments carried out in laboratory and harbour conditions comparing vision based pose estimates with ground truth.
+
 Introduction
 ------------
-Vision based localization, mapping and motion estimation algorithms are widely used in ground-based and aerial robotics. They have proven to be a precise and low-cost alternative to inertial measurement units and laser scanners. In this paper we show that stereo vision based odometry can be used by autonomous underwater vehicles (AUVs) that navigate close to the seabed for incremental pose estimation and 3D reconstruction of small areas. We present the integration of a stereo visual odometry system into an AUV and experiments carried out in laboratory and harbour conditions comparing vision based pose estimates with ground truth.
+Related work
+(Any publications on underwater visual odometry (including AUVs)?
 
-Visual Odometry System
-----------------------
-The first choice to make for setting up a visual odometry system is the type of cameras to use. For a stereo camera system, one can choose between a fixed system that contains two cameras in one case and a custom made system of two single cameras. While the latter is more flexible as one can adapt the baseline the former is easier to integrate as synchronization and alignment are optimized by the manufacturer.
-We use a standard stereo camera with a custom waterproof housing.
+Visual Odometry Systems
+-----------------------
+A visual odometry system consists of one or more cameras, a processing unit, and the required algorithms that process incoming images. 
+Algorithms for visual odometry - as opposed to full SLAM algorithms - focus on fast frame-to-frame motion estimates without keeping a large history for loop closing. The emphasis lies on accurate measurements at high frequencies. Systems that use just one camera need translational movement for 3D motion estimation and all measurements have to be scaled by an unknown factor to be on a metric scale. Using a calibrated stereo camera overcomes both of the aforementioned problems as 3D coordinates of matched points in a single left/right image pair can be computed by triangulation. We therefore focus our work on visual odometry systems that use stereo cameras.
 
-The visual odometry software we choose is based on *libviso2* :raw-tex:`\cite{Geiger2011}`. The processing pipeline contains five consecutive steps:
+The two publicly available algorithms we compare are *libviso2* :raw-tex:`\cite{Geiger2011}` and *fovis* :raw-tex:`\cite{Huang2011}`. The former has been successfully used on cars, and the latter has proven to work for micro aerial vehicles. 
 
-1. Image Acquisition
-2. Preprocessing
-3. Feature Extraction
-4. Feature Matching
-5. Motion Estimation
+Both algorithms have very similar processing pipelines. Table :ref:`odometry-comparison` summarizes the steps of the algorithms, outlining similarities and differences. To limit the extend of this paper, the interested reader is refered to the original papers for a deeper understanding and more detailed description of the algorithms. 
 
-*libviso2* covers steps 3 to 5. We added an open source wrapper for this library [#]_ to integrate it into the Robot Operating System ROS :raw-tex:`\cite{Quigley2009}`. This simplifies the integration in different robotic vehicles as well as comparison with other integrated sensors. For step 2 we use the OpenCV library :raw-tex:`\cite{Bradski2000}` functions that are integrated in ROS and step 1 is done by a custom stereo camera driver.
+We created wrappers for both libraries [#]_ to integrate them into the Robot Operating System ROS :raw-tex:`\cite{Quigley2009}`. This simplifies the integration in different robotic vehicles as well as comparison with other integrated sensors.
 
-.. [#] See http://www.ros.org/viso2_ros for source code and documentation.
+.. [#] See http://www.ros.org/viso2_ros and http://www.ros.org/fovis_ros for source code and documentation.
 
-.. Image Acquisition
+.. raw:: latex
 
-.. The design of the stereo system determines the precision of the overall system. Generally speaking, higher resolution, greater field of view and greater baseline improve precision. However, increasing resolution increases processing time as well, greater field of view reduces details and a greater baseline can lead to matching problems as the scene may look different from left and right camera positions. We formally present these variables and the dependencies on the environment.
+  \begin{table*}[h]
+    \begin{tabularx}{\textwidth}{l|X|X}
+      & \textbf{libviso2} & \textbf{fovis}  \\
+      \hline
+      Scale Invariance                & 2 levels, interpolated & 3 gaussian pyramid levels \\[3pt]
+      Feature Detection               & 5x5 blob and corner masks & FAST with adaptive threshold  \\[3pt]
+      Initial Feature Reduction       & non-minimum-/non-maximum-suppression & Grid Filter \\[3pt]
+      Descriptor                      & 16 Sobel filter responses & 9x9 pixel window, intensity normalized \\[3pt]
+      Subpixel refinement             & Parabolic Fitting & ESM \\[3pt]
+      Matching Search Space Limitation & Two-step candidate reduction & Initial Rotation estimate (Mei et al.) + Search window \\[3pt]
+      Matching Images                 & Circlular match & Left to right \& left to previous left \\[3pt]
+      Match reduction                 & Bucketing & None \\[3pt]
+      Initial outlier rejection       & 2D neighborhood support & None \\[3pt]
+      Main outlier classification     & Iteratively during motion estimation (RANSAC) & In advance (maximally consistent clique) \\[3pt]
+      Minimized Reprojection Error    & previous 3D to current left and right image & previous 3D to current left and current 3D to previous right image \\[3pt]
+      Motion filtering                & Kalman & None (external) \\[3pt]
+      Keyframe selection              & none (external) & automatic, based on number of matches \\[3pt]
+    \end{tabularx}
+    \caption{\DUrole{label}{odometry-comparison} Comparison of the two visual odometry algorithms.}
+  \end{table*}
 
-.. Preprocessing
-
-.. The first step of working with stereo images is undistortion and rectification. After this process, corresponding points of left and right images lie on the same line.
-
-.. Feature Extraction
-
-.. Feature extraction is done by applying blob and corner detection masks on the image. The result is a huge amount of features of four classes. Non-minimum and non-maximum suppression is used for filtering.
-
-..  Matching
-
-.. The feature matching 
-
-..  Motion Estimation
 
 Evaluation Method
 -----------------
@@ -97,6 +104,9 @@ As visual odometry suffers from drift, comparing whole trajectories, i.e. poses 
 
 Experiments
 -----------
+
+TODO describe used hardware (cameras & CPU)
+
 .. figure:: images/G500-Experiments.jpg
   :width: 100 % 
 
@@ -117,8 +127,7 @@ In the harbour experiment, a DVL and an AHS have been used as navigation sensors
 
 The AUV was configured to not control pitch, roll and sway. Motions in these degrees of freedom are therefore rather small and we cannot compute reasonable error measures for them.
 
-A comparison of linear velocity estimates to ground truth can be found in Figure :ref:`error-plots`. Note that the estimated angular velocities hardly differ from the ground truth through the whole path.
-
+A comparison of linear velocity estimates to ground truth can be found in Figure :ref:`error-plots`. Note that the estimated angular velocities hardly differ from the ground truth throughout the whole path.
 
 .. raw:: latex
 
