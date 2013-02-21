@@ -29,7 +29,7 @@ Visual Odometry for Autonomous Underwater Vehicles
 
 Abstract
 --------
-Vision based motion estimation algorithms are widely used in ground-based and aerial robotics. Combined with inertial measurement units, they have proven to be a precise and low-cost sensor for velocity and pose estimation. In this paper we show that stereo vision based odometry can be used by autonomous underwater vehicles (AUVs) that navigate close to the seabed for incremental pose estimation and 3D reconstruction of small areas. We present the integration of two different stereo visual odometry algorithms into an AUV and experiments carried out in laboratory and harbour conditions comparing vision based pose estimates with ground truth.
+Vision based motion estimation algorithms are widely used in ground-based and aerial robotics. Combined with inertial measurement units, they have proven to be a precise and low-cost sensor for velocity and pose estimation. In this paper we show that stereo vision based odometry can be used by autonomous underwater vehicles (AUVs) that navigate close to the seabed for velocity and incremental pose estimation in small areas. We present the integration of two different stereo visual odometry algorithms into an AUV and experiments carried out in laboratory and harbour conditions comparing vision based pose estimates with ground truth.
 .. and DVL measurements?
 
 Introduction
@@ -50,11 +50,30 @@ Algorithms for visual odometry - as opposed to full SLAM algorithms - focus on f
 
 The two publicly available algorithms we compare are *libviso2* :raw-tex:`\cite{Geiger2011}` and *fovis* :raw-tex:`\cite{Huang2011}`. The former has been successfully used on cars, and the latter has proven to work for micro aerial vehicles. 
 
-Both algorithms have very similar processing pipelines containing feature detection, filtering, matching, and motion estimation. Table :ref:`odometry-comparison` summarizes the steps of the algorithms, outlining similarities and differences. To limit the extend of this paper, the interested reader is refered to the original papers for a deeper understanding and more detailed description of the algorithms. 
-
 We created wrappers for both libraries [#]_ to integrate them into the Robot Operating System ROS :raw-tex:`\cite{Quigley2009}`. This simplifies the integration in different robotic vehicles as well as comparison with other integrated sensors.
 
 .. [#] See http://www.ros.org/viso2_ros and http://www.ros.org/fovis_ros for source code and documentation.
+
+Both algorithms have very similar processing pipelines containing feature detection, filtering, matching, and motion estimation. Table :ref:`odometry-comparison` summarizes the steps of the algorithms, outlining similarities and differences. To limit the extend of this paper, the interested reader is refered to the original papers for a deeper understanding and more detailed description of the algorithms. In the following we give a brief overview of both algorithms.
+
+libviso2
+~~~~~~~~
+The features used by libviso2 are simple blob and corner detector masks, resulting in a large amount of interest points of four different classes. Non-minima-/non-maxima-suppression is used for initial feature reduction. In this step, two different thresholds for minima/maxima selection are used resulting in two sets of sparse strong features and dense less strong features. This allows for a multi-stage matching coarse to fine using matches of the strong features to limit the search range for the weaker ones. The used descriptor contains only 16 values of sobel filter responses distributed inside an 11x11 pixel window. The similarity measure for two features is the sum of absolute differences of their descriptors. The computation of this measure is sped up using SIMD instructions.
+
+The matching of features follows the following order: current left image to current right image, current right image to previous right image, previous right image to previous left image and previous left image to current right image. If the target feature of the last matching is the same as the source feature of the first matching the match is classified as valid. Apart from the aforementioned search range limitation, possibly wrong matches are discarded using a neighborhood support heuristic.
+From the obtained matches a subset is drawn that is distributed over the whole image by dividing the image in a grid of subimages and drawing a fixed maximum number of matches from each cell.
+
+Subsequently, 3D coordinates of the features in the previous image pair are calculated through triangulation. Gauss-Newton minimization of the reprojection error of these 3D points onto the current left and right images leads to the rigid transformation from the previous image's camera pose to the current camera pose. The motion estimation procedure is wrapped in a RANSAC scheme.
+
+fovis
+~~~~~
+fovis uses the FAST feature detector :raw-tex:`\cite{Rosten2005FPA,Rosten2006MLF}` with an adaptive threshold on three gaussian pyramid levels. The number of features is reduced taking the best features of each cell of a regular grid. The feature descriptor is an intensity normalized 9x9 pixel window centered on the feature location. The bottom right pixel is left out to get better memory alignment for rapid similarity measure computation using SIMD instructions. 
+
+Features are matched from the current left to the left reference frame. The right frames are used for disparity lookup only. Inlier/outlier classification is done using the concept of a maximally consistent clique, i.e. matches are sequentially added while the relation of euclidean distance to other matched features does not change from the reference to the current frames. For motion estimation, the reprojection error from 3D positions of current features to the reference left frame as well as from 3D positions of the reference features to the current left frame is minimized using the Gauss-Newton method. If the reprojection error of a certain match exceeds a threshold, that match is discarded. The motion estimate is refined using only those matches that survived this process.
+
+Apart from the used feature detectors, an important difference of the two algorithms is the selection of the reference frame for motion computation. libviso2 does not have automatic selection of the reference frame and replaces it in each iteration. In contrast, fovis only replaces the reference frame if the number of inlier matches drops below a given threshold. The purpose is to reduce drift that could arise from sensor noise or bad calibration.
+
+Both algorithms use feature descriptors that are not invariant to rotation or scale changes. The frequency of both algorithms has therefore to be high to cope with these movements.
 
 .. raw:: latex
 
@@ -62,7 +81,7 @@ We created wrappers for both libraries [#]_ to integrate them into the Robot Ope
     \begin{tabularx}{\textwidth}{l|X|X}
       & \textbf{libviso2} & \textbf{fovis}  \\
       \hline
-      Feature Scales                  & 2 levels, interpolated & 3 gaussian pyramid levels \\[3pt]
+      Feature Scales                  & 1 (reduced) level & 3 gaussian pyramid levels \\[3pt]
       Feature Detection               & 5x5 blob and corner masks & FAST with adaptive threshold  \\[3pt]
       Initial Feature Reduction       & non-minimum-/non-maximum-suppression & grid filter \\[3pt]
       Descriptor                      & 16 Sobel filter responses & 9x9 pixel window, intensity normalized \\[3pt]
@@ -88,7 +107,7 @@ Evaluation Method
 
 .. add reference to KITTI benchmark here?
 
-As visual odometry suffers from drift, comparing whole trajectories, i.e. poses in time directly to ground truth is not very meaningful. Instead, we subdivide the path into small pieces and compare velocities for each piece to the matching piece in our ground truth. We evaluate both translation and rotation errors.
+As visual odometry suffers from drift, comparing whole trajectories, i.e. poses in time directly to ground truth is not very meaningful. Instead, we subdivide the paths into small pieces and compare velocities for each piece to the matching piece in our ground truth. We evaluate both translation and rotation errors.
 
 .. raw:: latex
 
