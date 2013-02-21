@@ -30,11 +30,18 @@ Visual Odometry for Autonomous Underwater Vehicles
 Abstract
 --------
 Vision based motion estimation algorithms are widely used in ground-based and aerial robotics. Combined with inertial measurement units, they have proven to be a precise and low-cost sensor for velocity and pose estimation. In this paper we show that stereo vision based odometry can be used by autonomous underwater vehicles (AUVs) that navigate close to the seabed for incremental pose estimation and 3D reconstruction of small areas. We present the integration of two different stereo visual odometry algorithms into an AUV and experiments carried out in laboratory and harbour conditions comparing vision based pose estimates with ground truth.
+.. and DVL measurements?
 
 Introduction
 ------------
-Related work
-(Any publications on underwater visual odometry (including AUVs)?
+TODO Related work
+(Any publications on underwater visual odometry (including AUVs), else UAV or automobile systems)
+
+No GPS underwater
+
+DVL very expensive, vision+IMU cheap
+
+Underwater vision dificulties
 
 Visual Odometry Systems
 -----------------------
@@ -43,7 +50,7 @@ Algorithms for visual odometry - as opposed to full SLAM algorithms - focus on f
 
 The two publicly available algorithms we compare are *libviso2* :raw-tex:`\cite{Geiger2011}` and *fovis* :raw-tex:`\cite{Huang2011}`. The former has been successfully used on cars, and the latter has proven to work for micro aerial vehicles. 
 
-Both algorithms have very similar processing pipelines. Table :ref:`odometry-comparison` summarizes the steps of the algorithms, outlining similarities and differences. To limit the extend of this paper, the interested reader is refered to the original papers for a deeper understanding and more detailed description of the algorithms. 
+Both algorithms have very similar processing pipelines containing feature detection, filtering, matching, and motion estimation. Table :ref:`odometry-comparison` summarizes the steps of the algorithms, outlining similarities and differences. To limit the extend of this paper, the interested reader is refered to the original papers for a deeper understanding and more detailed description of the algorithms. 
 
 We created wrappers for both libraries [#]_ to integrate them into the Robot Operating System ROS :raw-tex:`\cite{Quigley2009}`. This simplifies the integration in different robotic vehicles as well as comparison with other integrated sensors.
 
@@ -55,19 +62,22 @@ We created wrappers for both libraries [#]_ to integrate them into the Robot Ope
     \begin{tabularx}{\textwidth}{l|X|X}
       & \textbf{libviso2} & \textbf{fovis}  \\
       \hline
-      Scale Invariance                & 2 levels, interpolated & 3 gaussian pyramid levels \\[3pt]
+      Feature Scales                  & 2 levels, interpolated & 3 gaussian pyramid levels \\[3pt]
       Feature Detection               & 5x5 blob and corner masks & FAST with adaptive threshold  \\[3pt]
-      Initial Feature Reduction       & non-minimum-/non-maximum-suppression & Grid Filter \\[3pt]
+      Initial Feature Reduction       & non-minimum-/non-maximum-suppression & grid filter \\[3pt]
       Descriptor                      & 16 Sobel filter responses & 9x9 pixel window, intensity normalized \\[3pt]
-      Subpixel refinement             & Parabolic Fitting & ESM \\[3pt]
-      Matching Search Space Limitation & Two-step candidate reduction & Initial Rotation estimate (Mei et al.) + Search window \\[3pt]
-      Matching Images                 & Circlular match & Left to right \& left to previous left \\[3pt]
-      Match reduction                 & Bucketing & None \\[3pt]
-      Initial outlier rejection       & 2D neighborhood support & None \\[3pt]
-      Main outlier classification     & Iteratively during motion estimation (RANSAC) & In advance (maximally consistent clique) \\[3pt]
-      Minimized Reprojection Error    & previous 3D to current left and right image & previous 3D to current left and current 3D to previous right image \\[3pt]
-      Motion filtering                & Kalman & None (external) \\[3pt]
-      Keyframe selection              & none (external) & automatic, based on number of matches \\[3pt]
+      Subpixel Position Refinement    & parabolic fitting & ESM \\[3pt]
+      \hline
+      Matching Search Space Limitation & two-step candidate reduction & initial rotation estimate (Mei et al.) + search window \\[3pt]
+      Matching Images                 & circlular match & left to right \& left to previous left \\[3pt]
+      Match Reduction                 & grid filter & none \\[3pt]
+      \hline
+      Initial Outlier Rejection       & 2D neighborhood support & none \\[3pt]
+      Outlier Classification          & iteratively during motion estimation (RANSAC) & maximally consistent clique \\[3pt]
+      Minimized Reprojection Error    & previous 3D to current left and right image & previous 3D to current left and current 3D to previous left image \\[3pt]
+      \hline
+      Motion Filtering                & Kalman & None (external) \\[3pt]
+      Keyframe Selection              & none (external) & automatic, based on number of matches \\[3pt]
     \end{tabularx}
     \caption{\DUrole{label}{odometry-comparison} Comparison of the two visual odometry algorithms.}
   \end{table*}
@@ -76,7 +86,7 @@ We created wrappers for both libraries [#]_ to integrate them into the Robot Ope
 Evaluation Method
 -----------------
 
-.. possibly add reference to KITTI benchmark here
+.. add reference to KITTI benchmark here?
 
 As visual odometry suffers from drift, comparing whole trajectories, i.e. poses in time directly to ground truth is not very meaningful. Instead, we subdivide the path into small pieces and compare velocities for each piece to the matching piece in our ground truth. We evaluate both translation and rotation errors.
 
@@ -127,6 +137,8 @@ In the harbour experiment, a DVL and an AHS have been used as navigation sensors
 
 The AUV was configured to not control pitch, roll and sway. Motions in these degrees of freedom are therefore rather small and we cannot compute reasonable error measures for them.
 
+.. TODO: Update plots to contain output from both odometry algorithms with (manually) optimized parameters. Add the plot of the trajectory?
+
 A comparison of linear velocity estimates to ground truth can be found in Figure :ref:`error-plots`. Note that the estimated angular velocities hardly differ from the ground truth throughout the whole path.
 
 .. raw:: latex
@@ -144,17 +156,14 @@ A comparison of linear velocity estimates to ground truth can be found in Figure
   \end{table}
 
 
-.. TODO for full paper: create nice 3D views of reconstructed tire from roses (and blackbox from cirs?)
-
-
 Conclusion
 ----------
 
-Visual odometry is a method for motion estimation that gives good results using a low-cost sensor in reasonable conditions. We have shown that it can be used in an underwater environment if both the visibility conditions and the appearance of the sea floor result in images with sufficient texture. Like all incremental motion estimation methods, visual odometry suffers from drift and has to be combined with other sensors to get precise long-term position estimates. Apart from that, failure might occur in situations with insufficient texture, motion blur, or bad visibility. One important feature of the system is that it detects the failures and can signal them to higher level processing units.
+Visual odometry is a method for motion estimation that gives good results using a low-cost sensor in reasonable conditions. We presented open source wrappers for two publicly available visual odometry algorithms to the community that ease the integration into existing robotic platforms.
+We have shown that these algorithms can be used in an underwater environment if both the visibility conditions and the appearance of the sea floor result in images with sufficient texture. Like all incremental motion estimation methods, visual odometry suffers from drift and has to be combined with other sensors to get precise long-term position estimates. Apart from that, failure might occur in situations with insufficient texture, motion blur, or bad visibility. 
 
 Despite the mentioned drawbacks we have shown that a visual odometer using a downward looking stereo camera can be a valuable sensor for underwater vehicles giving good estimates for linear movement and rotation about the vehicle's vertical axis. 
-
-.. We have shown that the precision and speed of the presented system is sufficient for the reconstruction and visualization of small 3D environments.
+TODO: Complete with experiment results.
 
 .. raw:: latex
 
