@@ -30,7 +30,6 @@ Visual Odometry for Autonomous Underwater Vehicles
 Abstract
 --------
 Vision based motion estimation algorithms are widely used in ground-based and aerial robotics. Combined with inertial measurement units, they have proven to be a precise and low-cost sensor for velocity and pose estimation. In this paper we show that stereo vision based odometry can be used by autonomous underwater vehicles (AUVs) that navigate close to the seabed for velocity and incremental pose estimation in small areas. We present the integration of two different stereo visual odometry algorithms into an AUV and experiments carried out in laboratory and harbour conditions comparing vision based pose estimates with ground truth.
-.. and DVL measurements?
 
 Introduction
 ------------
@@ -63,7 +62,7 @@ The features used by libviso2 are simple blob and corner detector masks, resulti
 The matching of features follows the following order: current left image to current right image, current right image to previous right image, previous right image to previous left image and previous left image to current right image. If the target feature of the last matching is the same as the source feature of the first matching the match is classified as valid. Apart from the aforementioned search range limitation, possibly wrong matches are discarded using a neighborhood support heuristic.
 From the obtained matches a subset is drawn that is distributed over the whole image by dividing the image in a grid of subimages and drawing a fixed maximum number of matches from each cell.
 
-Subsequently, 3D coordinates of the features in the previous image pair are calculated through triangulation. Gauss-Newton minimization of the reprojection error of these 3D points onto the current left and right images leads to the rigid transformation from the previous image's camera pose to the current camera pose. The motion estimation procedure is wrapped in a RANSAC scheme.
+Subsequently, 3D coordinates of the features in the previous image pair are calculated through triangulation. Gauss-Newton minimization of the reprojection error of these 3D points onto the current left and right images leads to the rigid transformation from the previous image's camera pose to the current camera pose. The motion estimation procedure is wrapped in a RANSAC :raw-tex:`\cite{Fischler1981}` scheme.
 
 fovis
 ~~~~~
@@ -105,8 +104,6 @@ Both algorithms use feature descriptors that are not invariant to rotation or sc
 Evaluation Method
 -----------------
 
-.. add reference to KITTI benchmark here?
-
 As visual odometry suffers from drift, comparing whole trajectories, i.e. poses in time directly to ground truth is not very meaningful. Instead, we subdivide the paths into small pieces and compare velocities for each piece to the matching piece in our ground truth. We evaluate both translation and rotation errors.
 
 .. raw:: latex
@@ -141,7 +138,7 @@ TODO describe used hardware (cameras & CPU)
 
   :label:`g500` The Girona 500 AUV during laboratory and harbour experiments. The white box in the front of the lower part is the stereo camera. The cylinder right next to it contains the image processing unit.
 
-The experiments carried out use data gathered during the TRIDENT project [#]_ both in laboratory and harbour conditions using the Girona500 AUV :raw-tex:`\cite{Ribas2012}` as vehicle (Figure :ref:`g500`). Figure :ref:`sample-images` shows some example images from both sequences. Ground truth for the laboratory experiment is extracted by matching each image that has been captured against the known image that is printed on the floor of the test pool. As the size of the print is known, 6 DOF camera poses can be computed minimizing feature reprojection errors.
+The experiments carried out use data gathered during the TRIDENT project [#]_ both in laboratory and harbour conditions using the Girona500 AUV :raw-tex:`\cite{Ribas2012}` as vehicle (Figure :ref:`g500`). Figure :ref:`sample-images` shows some example images from both sequences. Ground truth for the laboratory experiment is extracted by matching each image that has been captured against the known image that is printed on the floor of the test pool. As the size of the print is known, 6 DOF camera poses can be computed minimizing reprojection errors of matched features.
 
 .. figure:: images/sample_images.jpg
   :width: 100 % 
@@ -156,9 +153,9 @@ In the harbour experiment, a DVL and an AHS have been used as navigation sensors
 
 The AUV was configured to not control pitch, roll and sway. Motions in these degrees of freedom are therefore rather small and we cannot compute reasonable error measures for them.
 
-.. TODO: Update plots to contain output from both odometry algorithms with (manually) optimized parameters. Add the plot of the trajectory?
+TODO Update plots to contain output from both odometry algorithms with (manually) optimized parameters. Add the plot of the trajectory?
 
-A comparison of linear velocity estimates to ground truth can be found in Figure :ref:`error-plots`. Note that the estimated angular velocities hardly differ from the ground truth throughout the whole path.
+A comparison of linear velocity estimates to ground truth can be found in Figure :ref:`error-plots`. Note that the estimated angular velocities hardly differ from the ground truth throughout the whole path ... for both odometers?
 
 .. raw:: latex
 
@@ -175,6 +172,15 @@ A comparison of linear velocity estimates to ground truth can be found in Figure
   \end{table}
 
 
+TODO Brief description of parameter tuning
+
+TODO Error comparison (table)
+
+TODO Runtime comparison (table)
+
+TODO describe difficulties / explain obvious errors in the data etc.
+
+
 Conclusion
 ----------
 
@@ -182,7 +188,9 @@ Visual odometry is a method for motion estimation that gives good results using 
 We have shown that these algorithms can be used in an underwater environment if both the visibility conditions and the appearance of the sea floor result in images with sufficient texture. Like all incremental motion estimation methods, visual odometry suffers from drift and has to be combined with other sensors to get precise long-term position estimates. Apart from that, failure might occur in situations with insufficient texture, motion blur, or bad visibility. 
 
 Despite the mentioned drawbacks we have shown that a visual odometer using a downward looking stereo camera can be a valuable sensor for underwater vehicles giving good estimates for linear movement and rotation about the vehicle's vertical axis. 
-TODO: Complete with experiment results.
+
+TODO Complete with experiment results.
+
 
 .. raw:: latex
 
