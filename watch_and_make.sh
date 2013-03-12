@@ -2,6 +2,6 @@
 
 while true 
 do
-    inotifywait -e close_write paper.txt ./data/ ./images/ ./plots/ docutils.conf
+    inotifywait -e close_write paper.tex ./data/ ./images/ ./plots/ docutils.conf
     make
 done
