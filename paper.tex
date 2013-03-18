@@ -66,6 +66,10 @@
 \documentclass[conference]{IEEEtran}
 % Add the compsoc option for Computer Society conferences.
 
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage[T1]{fontenc}
+
 % CITATION PACKAGES
 \usepackage{cite}
 
@@ -111,7 +115,7 @@
 \usepackage{ifthen}
 % place figures here definitely
 \floatplacement{figure}{H}
-\setcounter{secnumdepth}{0}
+%\setcounter{secnumdepth}{0}
 
 % Multi-column tables
 \usepackage{multirow,tabularx}
@@ -144,7 +148,7 @@ Email: stephan.wirth@uib.es}
 \IEEEauthorblockA{System, Robotics and Vision Group\\
 Universitat de les Illes Balears\\
 Palma de Mallorca, Spain\\
-Email: pl.negre@uib.cat}
+Email: pl.negre@uib.cat} 
 \and
 \IEEEauthorblockN{Gabriel Oliver Codina}
 \IEEEauthorblockA{System, Robotics and Vision Group\\
@@ -157,21 +161,27 @@ Email: goliver@uib.es}}
 
 
 \begin{abstract}
-Vision based motion estimation algorithms are widely used in ground-based and aerial robotics. Combined with inertial measurement units, they have proven to be a precise and low-cost sensor for velocity and pose estimation. In this paper we show that stereo vision based odometry can be used by autonomous underwater vehicles (AUVs) that navigate close to the seabed for velocity and incremental pose estimation in small areas. We present the integration of two different stereo visual odometry algorithms into an AUV and experiments carried out in laboratory and harbour conditions comparing vision based pose estimates with ground truth.
+Vision based motion estimation algorithms are widely used in ground-based and aerial robotics. Combined with inertial measurement units, they have proven to be a precise and low-cost sensor for velocity and pose estimation. In this paper we show that stereo vision based odometry can be used by autonomous underwater vehicles that navigate close to the seabed for velocity and incremental pose estimation in small areas. We present the integration of two different stereo visual odometry algorithms into an AUV and experiments carried out in laboratory and harbour conditions comparing vision based pose estimates with ground truth.
 \end{abstract}
 
 
 \section{Introduction 
   \label{introduction}
 }
-TODO Related work
-(Any publications on underwater visual odometry (including AUVs), else UAV or automobile systems)
 
-No GPS underwater
+The lastest advances in Autonomous Underwater Vehicles (AUVs) demand accurate estimations of the vehicle's pose and velocity. The tasks to be performed by such robots are increasingly complex and, in most cases it is needed to precisely positioning the underwater vehicle to a certain location in order to execute the desired task. Navigation systems based on wirelessly transmited data, such as Global Positioning System (GPS) or mobile network positioning, can not be used in uderwater enviroments. Therefore the AUV must estimate its position using self-contained sensors. One of the most popular positioning sensors for underwater vehicles is the Doppler Velocity Log (DVL) which provides precise velocity and altitude updates for a wide variety of underwater tasks. However, DVL is an expensive device that cannot be integraded in many underwater projects.
 
-DVL very expensive, vision+IMU cheap
+Visual odometry is the process of estimating a vehicle 3D pose using only visual images. This technique is becoming popular in AUVs for navigation, station keeping and the provision of a manipulator feedback information. Visual odometry output is often fused with Inertial Measurement Units (IMU) to provide a cheaper alternative to DVLs \cite{Hildebrandt2010}. However, the limitations of underwater vision are widely known, and its performance depends on many factors such as visibility, lighting and distorsion resulting from varying refractive indices.
 
-Underwater vision dificulties
+In this paper we present the integration of two popular stereo visual odometry algorithms into an AUV, the experiments carried out in laboratory and harbour enviroments, as well as the evaluation method to compare the performance of both algorithms.
+
+First, the paper presents related works on visual odometry. Section \ref{visual-odometry-systems} describes the general concepts of visual odometry systems and presents a brief overview of the two analyzed algorithms (fovis and libviso2), followed by the explanation of the evaluation method in Section \ref{evaluation-method} and experiments in different eviroments. Finally, the conclusion ot the study and future prespectives are presented.
+
+\section{Related Work 
+  \label{related-work}
+}
+
+TODO: Any publications on underwater visual odometry (including AUVs), else UAV or automobile systems
 
 
 \section{Visual Odometry Systems
@@ -259,9 +269,29 @@ As visual odometry suffers from drift, comparing whole trajectories, i.e. poses 
   }
   \end{center}
   \caption{Linear (a) and angular (b) velocity estimates compared to ground truth for the laboratory (top) and the harbour (bottom) experiments for libviso2.}
-  \label{error-plots}
+  \label{error-plots-viso2}
 \end{figure*}
 
+\newpage
+
+\begin{figure*}
+  \begin{center}
+  \subfloat[]{
+    \begin{tabular}{c}
+      \includegraphics[width=0.45\linewidth]{aux/fovis-cirs-timefixed-run3-vt.pdf}\\
+      \includegraphics[width=0.45\linewidth]{aux/fovis-roses-vt.pdf}
+    \end{tabular}
+    }
+    \subfloat[]{
+    \begin{tabular}{c}
+      \includegraphics[width=0.45\linewidth]{aux/fovis-cirs-timefixed-run3-vyaw.pdf}\\
+      \includegraphics[width=0.45\linewidth]{aux/fovis-roses-vyaw.pdf}
+    \end{tabular}
+  }
+  \end{center}
+  \caption{Linear (a) and angular (b) velocity estimates compared to ground truth for the laboratory (top) and the harbour (bottom) experiments for fovis.}
+  \label{error-plots-fovis}
+\end{figure*}
 
 \section{Experiments
   \label{experiments}
@@ -289,7 +319,7 @@ The AUV was configured to not control pitch, roll and sway. Motions in these deg
 
 TODO Update plots to contain output from both odometry algorithms with (manually) optimized parameters. Add the plot of the trajectory?
 
-A comparison of linear velocity estimates to ground truth can be found in Figure \ref{error-plots}. Note that the estimated angular velocities hardly differ from the ground truth throughout the whole path ... for both odometers?
+A comparison of linear velocity estimates to ground truth can be found in Figure \ref{error-plots-viso2}. Note that the estimated angular velocities hardly differ from the ground truth throughout the whole path ... for both odometers?
 
 \begin{table}[ht]
   \caption{Experiment details}
