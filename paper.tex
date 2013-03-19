@@ -138,23 +138,33 @@
 \title{Visual Odometry for Autonomous Underwater Vehicles}
 
 % author names and affiliations
-\author{\IEEEauthorblockN{Stephan Wirth}
-\IEEEauthorblockA{System, Robotics and Vision Group\\
+% \author{\IEEEauthorblockN{Stephan Wirth}
+% \IEEEauthorblockA{System, Robotics and Vision Group\\
+% Universitat de les Illes Balears\\
+% Palma de Mallorca, Spain\\
+% Email: stephan.wirth@uib.es}
+% \and
+% \IEEEauthorblockN{Pep Lluis Negre Carrasco}
+% \IEEEauthorblockA{System, Robotics and Vision Group\\
+% Universitat de les Illes Balears\\
+% Palma de Mallorca, Spain\\
+% Email: pl.negre@uib.cat} 
+% \and
+% \IEEEauthorblockN{Gabriel Oliver Codina}
+% \IEEEauthorblockA{System, Robotics and Vision Group\\
+% Universitat de les Illes Balears\\
+% Palma de Mallorca, Spain\\
+% Email: goliver@uib.es}}
+
+\author{\IEEEauthorblockN{
+Stephan Wirth, 
+Pep Lluis Negre Carrasco, 
+Gabriel Oliver-Codina}
+\IEEEauthorblockA{
+Departament de Matemàtiques i Informàtica, 
 Universitat de les Illes Balears\\
-Palma de Mallorca, Spain\\
-Email: stephan.wirth@uib.es}
-\and
-\IEEEauthorblockN{Pep Lluis Negre Carrasco}
-\IEEEauthorblockA{System, Robotics and Vision Group\\
-Universitat de les Illes Balears\\
-Palma de Mallorca, Spain\\
-Email: pl.negre@uib.cat} 
-\and
-\IEEEauthorblockN{Gabriel Oliver Codina}
-\IEEEauthorblockA{System, Robotics and Vision Group\\
-Universitat de les Illes Balears\\
-Palma de Mallorca, Spain\\
-Email: goliver@uib.es}}
+Cra. Valldemossa, km. 7,5 07122 Palma de Mallorca (Spain)\\
+Email: \{stephan.wirth, pl.negre, goliver\}@uib.es}}
 
 % make the title area
 \maketitle
@@ -171,7 +181,7 @@ Vision based motion estimation algorithms are widely used in ground-based and ae
 
 The lastest advances in Autonomous Underwater Vehicles (AUVs) demand accurate estimations of the vehicle's pose and velocity. The tasks to be performed by such robots are increasingly complex and, in most cases it is needed to precisely positioning the underwater vehicle to a certain location in order to execute the desired task. Navigation systems based on wirelessly transmited data, such as Global Positioning System (GPS) or mobile network positioning, can not be used in uderwater enviroments. Therefore the AUV must estimate its position using self-contained sensors. One of the most popular positioning sensors for underwater vehicles is the Doppler Velocity Log (DVL) which provides precise velocity and altitude updates for a wide variety of underwater tasks. However, DVL is an expensive device that cannot be integraded in many underwater projects.
 
-Visual odometry is the process of estimating a vehicle 3D pose using only visual images. This technique is becoming popular in AUVs for navigation, station keeping and the provision of a manipulator feedback information. Visual odometry output is often fused with Inertial Measurement Units (IMU) to provide a cheaper alternative to DVLs \cite{Hildebrandt2010}. However, the limitations of underwater vision are widely known, and its performance depends on many factors such as visibility, lighting and distorsion resulting from varying refractive indices.
+Visual odometry is the process of estimating a vehicle 3D pose using only visual images. This technique is becoming popular in AUVs for navigation, station keeping and the provision of a manipulator feedback information. Visual odometry output is often fused with Inertial Measurement Units (IMU) to provide a cheaper alternative to DVLs \cite{Hildebrandt2010} \cite{Dunbabin2004}. However, the limitations of underwater vision are widely known, and its performance depends on many factors such as visibility, lighting and distorsion resulting from varying refractive indices.
 
 In this paper we present the integration of two popular stereo visual odometry algorithms into an AUV, the experiments carried out in laboratory and harbour enviroments, as well as the evaluation method to compare the performance of both algorithms.
 
@@ -181,7 +191,13 @@ First, the paper presents related works on visual odometry. Section \ref{visual-
   \label{related-work}
 }
 
-TODO: Any publications on underwater visual odometry (including AUVs), else UAV or automobile systems
+The basic visual odometry algorithm pipeline \cite{Moravec1980} consists in identifying keypoints (landmarks) in each camera frame, extract the feature descriptors of these points, estimate the depth for every landmark (typically using stereo or rgb-d cameras), match features across time frames, and then estimate the rigid body transformation that best aligns the features between frames. The result of this process is an estimation of  camera motion between frames, therefore it is necessary to integrate this data over the time to obtain the vehicle position and orientation.
+
+Visual odometers for AUVs \cite{Botelho2009} tend to use this pipeline and adapt every stage options (such us keypoint detector type and feature matching method) to they needs. Common feature detectors used for real-time visual odometry include Harris corners \cite{Harris1988} and FAST features \cite{Rosten2006}, which have a low computation cost and are robust against small viewpoint changes.
+
+Several AUVs localization algorithms are based on mosaics or structured enviroments and therefore assumes prior knowledge of the area to explore \cite{Garcia2001} \cite{Gracias2003} \cite{Carreras2003}.
+
+TODO
 
 
 \section{Visual Odometry Systems
@@ -336,7 +352,29 @@ A comparison of linear velocity estimates to ground truth can be found in Figure
 
 TODO Brief description of parameter tuning
 
-TODO Error comparison (table)
+\begin{table}[!t]
+  \renewcommand{\arraystretch}{1.3}
+  \caption{Comparison of translational and rotational errors for the laboratory experiments.}
+  \label{tab:results_attr}
+  \centering
+  \begin{tabular}{|l|l|l|l|} \hline
+    \textbf{Algorith} & \textbf{Translation} & \textbf{Rotation} & \textbf{Runtime}\\ \hline
+    libviso2 & 0.00978\% & 0.001739 [deg/m] & TODO \\ \hline
+    fovis    & 0.00601\% & 0.006311 [deg/m] & TODO \\ \hline
+  \end{tabular} 
+\end{table}
+
+\begin{table}[!t]
+  \renewcommand{\arraystretch}{1.3}
+  \caption{Comparison of translational and rotational errors for the harbour experiments.}
+  \label{tab:results_attr}
+  \centering
+  \begin{tabular}{|l|l|l|l|} \hline
+    \textbf{Algorith} & \textbf{Translation} & \textbf{Rotation} & \textbf{Runtime}\\ \hline
+    libviso2 & 0.00833\% & 0.007913 [deg/m] & TODO \\ \hline
+    fovis    & 0.01049\% & 0.003122 [deg/m] & TODO \\ \hline
+  \end{tabular} 
+\end{table}
 
 TODO Runtime comparison (table)
 
