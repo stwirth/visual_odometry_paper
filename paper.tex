@@ -100,6 +100,7 @@
 
 % SUBFIGURE PACKAGES
 \usepackage[caption=false,font=footnotesize]{subfig}
+%\usepackage[tight,footnotesize]{subfigure}
 \usepackage{multirow,tabularx}
 
 % FLOAT PACKAGES
@@ -113,8 +114,9 @@
 % fix search and cut-and-paste in Acrobat
 \usepackage{cmap}
 \usepackage{ifthen}
+
 % place figures here definitely
-\floatplacement{figure}{H}
+%\floatplacement{figure}{H}
 %\setcounter{secnumdepth}{0}
 
 % Multi-column tables
@@ -131,6 +133,9 @@
 
 % correct bad hyphenation here
 \hyphenation{op-tical net-works semi-conduc-tor}
+
+% Degrees
+\newcommand{\degree}{\ensuremath{^\circ}}
 
 \begin{document}
 
@@ -183,7 +188,7 @@ The lastest advances in Autonomous Underwater Vehicles (AUVs) demand accurate es
 
 Visual odometry is the process of estimating a vehicle 3D pose using only visual images. This technique is becoming popular in AUVs for navigation, station keeping and the provision of a manipulator feedback information. Visual odometry output is often fused with Inertial Measurement Units (IMU) to provide a cheaper alternative to DVLs \cite{Hildebrandt2010} \cite{Dunbabin2004}. However, the limitations of underwater vision are widely known, and its performance depends on many factors such as visibility, lighting and distorsion resulting from varying refractive indices.
 
-In this paper we present the integration of two popular stereo visual odometry algorithms into an AUV, the experiments carried out in laboratory and harbour enviroments, as well as the evaluation method to compare the performance of both algorithms.
+In this paper we present the integration of two existing stereo visual odometry algorithms into an AUV, the experiments carried out in laboratory and harbour enviroments, as well as the evaluation method to compare the performance of both algorithms.
 
 First, the paper presents related works on visual odometry. Section \ref{visual-odometry-systems} describes the general concepts of visual odometry systems and presents a brief overview of the two analyzed algorithms (fovis and libviso2), followed by the explanation of the evaluation method in Section \ref{evaluation-method} and experiments in different eviroments. Finally, the conclusion ot the study and future prespectives are presented.
 
@@ -191,14 +196,15 @@ First, the paper presents related works on visual odometry. Section \ref{visual-
   \label{related-work}
 }
 
-The basic visual odometry algorithm pipeline \cite{Moravec1980} consists in identifying keypoints (landmarks) in each camera frame, extract the feature descriptors of these points, estimate the depth for every landmark (typically using stereo or rgb-d cameras), match features across time frames, and then estimate the rigid body transformation that best aligns the features between frames. The result of this process is an estimation of  camera motion between frames, therefore it is necessary to integrate this data over the time to obtain the vehicle position and orientation.
+The basic visual odometry algorithm pipeline \cite{Moravec1980} consists in identifying keypoints (landmarks) in each camera frame, extract the feature descriptors of these points, estimate the depth for every landmark (typically using stereo or rgb-d cameras), match features across time frames, and then estimate the rigid-body transformation that best aligns the features between frames. The result of this process is an estimation of  camera motion between frames, therefore it is necessary to integrate this data over the time to obtain the vehicle position and orientation.
 
-Visual odometers for AUVs \cite{Botelho2009} tend to use this pipeline and adapt every stage options (such us keypoint detector type and feature matching method) to they needs. Common feature detectors used for real-time visual odometry include Harris corners \cite{Harris1988} and FAST features \cite{Rosten2006}, which have a low computation cost and are robust against small viewpoint changes.
+Visual odometers for AUVs tend to use this pipeline \cite{Botelho2009} and adapt every stage options (such us keypoint detector type and feature matching method) to they needs. Common feature detectors used for real-time visual odometry include Harris corners \cite{Harris1988} \cite{Nister2006}, FAST \cite{Rosten2006} \cite{Huang2011} or SIFT \cite{Lowe2004} \cite{Botelho2009} features, which have a low computation cost and are robust against small viewpoint changes. Wide range of approaches are involved in the process of matching feature across frames, \cite{Geiger2011} propose a circle match between stereo image pairs of two consecutive frames and uses non-maxima-suppression techniques \cite{Geiger2010} to reduce the number of correspondences. RANSAC-based methods \cite{Nister2004} \cite{Johnson2008} and graph-based consistency algorithms \cite{Howard2008} have also been proven to robustly match features across frames.
 
-Several AUVs localization algorithms are based on mosaics or structured enviroments and therefore assumes prior knowledge of the area to explore \cite{Garcia2001} \cite{Gracias2003} \cite{Carreras2003}.
+Previous to the motion estimation stage, keypoint bucketing technique \cite{Zhang1995} has been shown to help reduce the inlier reprojection errors. Finally, motion estimation process can be solved through different methods. Using the closed-form solution to least-squares problem of absolute orientation \cite{Horn1987}, it is possible to directly minimize the Euclidean distance between matched features in order to compute the rigid-body transformation of the camera frame \cite{Huang2011}. Several ground-based visual odometers do not use 3D distances but implement the method of minimizing the pixel reprojection error \cite{Howard2008} \cite{Geiger2011}. 
 
-TODO
+Other AUVs localization algorithms are based on mosaics or structured enviroments and therefore assumes prior knowledge of the area to explore \cite{Garcia2001} \cite{Gracias2003} \cite{Carreras2003}.
 
+Many of the techniques and algorithms described in this section are primary focused on ground and aerial vehicles, however, most have not been tested in underwater environments. In this field, the complexity of the visual odometry task increases due to the dynamic light conditions and decreasing visibility with depth and turbity. Our focus is primarily on integrating and validating two different visual odometer approaches in such enviroments.
 
 \section{Visual Odometry Systems
   \label{visual-odometry-systems}
@@ -263,64 +269,32 @@ Both algorithms use feature descriptors that are not invariant to rotation or sc
 \end{table*}
 
 
-\section{Evaluation Method
-  \label{evaluation-method}
-}
-
-As visual odometry suffers from drift, comparing whole trajectories, i.e. poses in time directly to ground truth is not very meaningful. Instead, we subdivide the paths into small pieces and compare velocities for each piece to the matching piece in our ground truth. We evaluate both translation and rotation errors.
-
-\begin{figure*}
-  \begin{center}
-  \subfloat[]{
-    \begin{tabular}{c}
-      \includegraphics[width=0.45\linewidth]{aux/viso2-cirs-timefixed-run3-vt.pdf}\\
-      \includegraphics[width=0.45\linewidth]{aux/viso2-roses-vt.pdf}
-    \end{tabular}
-    }
-    \subfloat[]{
-    \begin{tabular}{c}
-      \includegraphics[width=0.45\linewidth]{aux/viso2-cirs-timefixed-run3-vyaw.pdf}\\
-      \includegraphics[width=0.45\linewidth]{aux/viso2-roses-vyaw.pdf}
-    \end{tabular}
-  }
-  \end{center}
-  \caption{Linear (a) and angular (b) velocity estimates compared to ground truth for the laboratory (top) and the harbour (bottom) experiments for libviso2.}
-  \label{error-plots-viso2}
-\end{figure*}
-
-\newpage
-
-\begin{figure*}
-  \begin{center}
-  \subfloat[]{
-    \begin{tabular}{c}
-      \includegraphics[width=0.45\linewidth]{aux/fovis-cirs-timefixed-run3-vt.pdf}\\
-      \includegraphics[width=0.45\linewidth]{aux/fovis-roses-vt.pdf}
-    \end{tabular}
-    }
-    \subfloat[]{
-    \begin{tabular}{c}
-      \includegraphics[width=0.45\linewidth]{aux/fovis-cirs-timefixed-run3-vyaw.pdf}\\
-      \includegraphics[width=0.45\linewidth]{aux/fovis-roses-vyaw.pdf}
-    \end{tabular}
-  }
-  \end{center}
-  \caption{Linear (a) and angular (b) velocity estimates compared to ground truth for the laboratory (top) and the harbour (bottom) experiments for fovis.}
-  \label{error-plots-fovis}
-\end{figure*}
-
 \section{Experiments
   \label{experiments}
 }
 
-TODO describe used hardware (cameras \& CPU)
+The experiments carried out use data gathered during the TRIDENT project\footnote{See \url{http://www.irs.uji.es/trident/}} both in laboratory and harbour conditions using the Girona500 AUV \cite{Ribas2012} as vehicle (Figure \ref{g500}). This vehicle has been designed by the Universitat de Girona and, without change, does not have stereo vision system, but allows the mounting of external systems on the bottom. This featured is used to attach the stereo vision unit developed by our Group in the Universitat de les Illes Balears. This unit is called Fugu-Flexible, or Fugu-F to shorten, which is basically composed of two stereo rigs and a computer system. Each module, hardware and cameras, is placed in an independent sealed case rated for up to 100 meters depth. The main Fugu-F hardware specifications are:
+
+\begin{itemize}
+  \item Two Bumblebee2 stereo cameras from Point Grey, one with a focal distance of 3.8mm (66\degree HFOV), and the other with 2.5mm (97\degree HFOV).
+  \item A mini-ITX motherboard from Jetway-NF98-QM57 Express Chipset with an Intel i5 processor at 2.33GHz with 4 cores.
+  \item A PCI express card with two firewire ports from Chronos to connect the cameras to the motherboard.
+\end{itemize}
+
 \begin{figure}
   \noindent\makebox[\linewidth][c]{\includegraphics[width=1.000\linewidth]{images/G500-Experiments.jpg}}
   \caption{The Girona 500 AUV during laboratory and harbour experiments. The white box in the front of the lower part is the stereo camera. The cylinder right next to it contains the image processing unit.}
   \label{g500}
 \end{figure}
 
-The experiments carried out use data gathered during the TRIDENT project\footnote{See \url{http://www.irs.uji.es/trident/}} both in laboratory and harbour conditions using the Girona500 AUV \cite{Ribas2012} as vehicle (Figure \ref{g500}). Figure \ref{sample-images} shows some example images from both sequences. Ground truth for the laboratory experiment is extracted by matching each image that has been captured against the known image that is printed on the floor of the test pool. As the size of the print is known, 6 DOF camera poses can be computed minimizing reprojection errors of matched features.
+%\begin{figure}
+%  \noindent\makebox[\linewidth][c]{\includegraphics[width=0.7\linewidth]{images/fugu-f.jpg}}
+%  \caption{Fugu-F: processing unit watertight cylinder with the two stereo rigs}
+%  \label{fugu-f}
+%\end{figure}
+
+Figure \ref{sample-images} shows some example images from the both laboratory and harbour enviroments. Ground truth for the laboratory experiment is extracted by matching each image that has been captured against the known image that is printed on the floor of the test pool. As the size of the print is known, 6 DOF camera poses can be computed minimizing reprojection errors of matched features.
+
 \begin{figure}
   \noindent\makebox[\linewidth][c]{\includegraphics[width=1.000\linewidth]{images/sample_images.jpg}}
   \caption{Sample images from the sequences during the laboratory (top row) and harbour (bottom row) experiments.}
@@ -331,52 +305,103 @@ For the harbour experiment, the determination of ground truth is more difficult,
 
 In the harbour experiment, a DVL and an AHS have been used as navigation sensors to let the vehicle follow a previously defined trajectory autonomously. In the laboratory experiments, the vehicle has been remotely controlled by a human operator. Table \ref{experiment-details} summarizes the characteristics of the experiments.
 
-The AUV was configured to not control pitch, roll and sway. Motions in these degrees of freedom are therefore rather small and we cannot compute reasonable error measures for them.
-
-TODO Update plots to contain output from both odometry algorithms with (manually) optimized parameters. Add the plot of the trajectory?
-
-A comparison of linear velocity estimates to ground truth can be found in Figure \ref{error-plots-viso2}. Note that the estimated angular velocities hardly differ from the ground truth throughout the whole path ... for both odometers?
-
-\begin{table}[ht]
+\begin{table}[!t]
+  \renewcommand{\arraystretch}{1.3}
   \caption{Experiment details}
   \label{experiment-details}
-  \begin{tabular}{l*{3}{c}r}
-    & \textbf{CIRS Lab} & \textbf{Roses Harbour}  \\
-    \hline
-    Total Trajectory Length (m)     & 47.54 & 90.48  \\[3pt]
-    Average Velocity (m/s)          & 0.15 & 0.12  \\[3pt]
-    Average Altitude (m)            & 1.59 & 1.34  \\[3pt]
-    Average Depth (m)               & 2.98 & 1.46  \\[3pt]
+  \centering
+  \begin{tabular}{lcc}
+    & \textbf{CIRS Lab} & \textbf{Roses Harbour}  \\ \hline
+    Total Trajectory Length (m)     & 47.54 & 90.48  \\
+    Average Velocity (m/s)          & 0.15 & 0.12  \\
+    Average Altitude (m)            & 1.59 & 1.34  \\
+    Average Depth (m)               & 2.98 & 1.46  \\
   \end{tabular}
 \end{table}
+
+The AUV was configured to not control pitch, roll and sway. Motions in these degrees of freedom are therefore rather small and we cannot compute reasonable error measures for them.
+
+\subsection{Evaluation Method
+  \label{evaluation-method}
+}
+
+As visual odometry suffers from drift, comparing whole trajectories, i.e. poses in time directly to ground truth is not very meaningful. Instead, we subdivide the paths into small pieces and compare velocities for each piece to the matching piece in our ground truth. This method is widely used in visual odometry evaluation \cite{Kitti2013} and depends clearly on the size of the subpaths. However, since it is used to compare different visual odometers, the important thing here is to be coherent with the size of the pieces for all algorithms.
+
+\subsection{Results
+  \label{results}
+}
+
+A comparison of linear velocity estimates to ground truth can be found in Figure \ref{error-plots-viso2} for libviso2 and \ref{error-plots-fovis} for fovis. Upper graphics refer to experiments in laboratory while the ones of the bottom refer to harbour tests. Linear velocity is shown in left graphics for both odometry estimation (blue) and ground truth (green), together with its error drawn in red. Finally, on right plot, a comparison of the angular velocity for odometry estimation (blue) and grund truth is also presented. The error in angular velocity is insignificant thus not shown in the figures.
+
+This results are numerically summarized in Table \ref{results-cirs} for laboratory experiments and Table \ref{results-roses} for harbour experiments.
+
+\begin{figure*}
+  \begin{center}
+    \subfloat[]{
+      \begin{tabular}{c}
+        \includegraphics[width=0.45\linewidth]{aux/viso2-cirs-timefixed-run3-vt.pdf}\\
+        \includegraphics[width=0.45\linewidth]{aux/viso2-roses-vt.pdf}
+      \end{tabular}
+    }
+    \subfloat[]{
+      \begin{tabular}{c}
+        \includegraphics[width=0.45\linewidth]{aux/viso2-cirs-timefixed-run3-vyaw.pdf}\\
+        \includegraphics[width=0.45\linewidth]{aux/viso2-roses-vyaw.pdf}
+      \end{tabular}
+    }
+  \end{center}
+  \caption{Linear (a) and angular (b) velocity estimates compared to ground truth for the laboratory (top) and the harbour (bottom) experiments for libviso2.}
+  \label{error-plots-viso2}
+\end{figure*}
+
+\begin{figure*}
+  \begin{center}
+    \subfloat[]{
+      \begin{tabular}{c}
+        \includegraphics[width=0.45\linewidth]{aux/fovis-cirs-timefixed-run3-vt.pdf}\\
+        \includegraphics[width=0.45\linewidth]{aux/fovis-roses-vt.pdf}
+      \end{tabular}
+    }
+    \subfloat[]{
+      \begin{tabular}{c}
+        \includegraphics[width=0.45\linewidth]{aux/fovis-cirs-timefixed-run3-vyaw.pdf}\\
+        \includegraphics[width=0.45\linewidth]{aux/fovis-roses-vyaw.pdf}
+      \end{tabular}
+    }
+  \end{center}
+  \caption{Linear (a) and angular (b) velocity estimates compared to ground truth for the laboratory (top) and the harbour (bottom) experiments for fovis.}
+  \label{error-plots-fovis}
+\end{figure*}
 
 TODO Brief description of parameter tuning
 
 \begin{table}[!t]
   \renewcommand{\arraystretch}{1.3}
   \caption{Comparison of translational and rotational errors for the laboratory experiments.}
-  \label{tab:results_attr}
+  \label{results-cirs}
   \centering
   \begin{tabular}{|l|l|l|l|} \hline
-    \textbf{Algorith} & \textbf{Translation} & \textbf{Rotation} & \textbf{Runtime}\\ \hline
-    libviso2 & 0.00978\% & 0.001739 [deg/m] & TODO \\ \hline
-    fovis    & 0.00601\% & 0.006311 [deg/m] & TODO \\ \hline
+    \textbf{Algorithm} & \textbf{Translation} & \textbf{Rotation} & \textbf{Runtime}\\ \hline
+    libviso2 & 0.978\% & 0.001739 [deg/m] & TODO \\ \hline
+    fovis    & 0.601\% & 0.006311 [deg/m] & TODO \\ \hline
   \end{tabular} 
 \end{table}
 
 \begin{table}[!t]
   \renewcommand{\arraystretch}{1.3}
   \caption{Comparison of translational and rotational errors for the harbour experiments.}
-  \label{tab:results_attr}
+  \label{results-roses}
   \centering
   \begin{tabular}{|l|l|l|l|} \hline
-    \textbf{Algorith} & \textbf{Translation} & \textbf{Rotation} & \textbf{Runtime}\\ \hline
-    libviso2 & 0.00833\% & 0.007913 [deg/m] & TODO \\ \hline
-    fovis    & 0.01049\% & 0.003122 [deg/m] & TODO \\ \hline
+    \textbf{Algorithm} & \textbf{Translation} & \textbf{Rotation} & \textbf{Runtime}\\ \hline
+    libviso2 & 0.833\% & 0.007913 [deg/m] & TODO \\ \hline
+    fovis    & 1.049\% & 0.003122 [deg/m] & TODO \\ \hline
   \end{tabular} 
 \end{table}
 
 TODO Runtime comparison (table)
+
+TODO Keypoints detection comparison (table)
 
 TODO describe difficulties / explain obvious errors in the data etc.
 
