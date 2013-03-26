@@ -184,27 +184,27 @@ Vision based motion estimation algorithms are widely used in ground-based and ae
   \label{introduction}
 }
 
-The lastest advances in Autonomous Underwater Vehicles (AUVs) demand accurate estimations of the vehicle's pose and velocity. The tasks to be performed by such robots are increasingly complex and, in most cases it is needed to precisely positioning the underwater vehicle to a certain location in order to execute the desired task. Navigation systems based on wirelessly transmited data, such as Global Positioning System (GPS) or mobile network positioning, can not be used in uderwater enviroments. Therefore the AUV must estimate its position using self-contained sensors. One of the most popular positioning sensors for underwater vehicles is the Doppler Velocity Log (DVL) which provides precise velocity and altitude updates for a wide variety of underwater tasks. However, DVL is an expensive device that cannot be integraded in many underwater projects.
+The lastest advances in Autonomous Underwater Vehicles (AUVs) demand accurate estimations of the vehicle's pose and velocity. The tasks to be performed by such robots are increasingly complex and, in most cases it is needed to precisely positioning the underwater vehicle to a certain location in order to execute the desired task. Navigation systems based on wirelessly transmited data, such as Global Positioning System (GPS) or mobile network positioning, can not be used in uderwater enviroments. Therefore the AUV must estimate its position using self-contained sensors. One of the most popular positioning sensors for underwater vehicles is the Doppler Velocity Log (DVL) which provides precise velocity and altitude updates for a wide variety of underwater tasks. However, DVL is an expensive device that cannot be integraded in many underwater vehicles.
 
 Visual odometry is the process of estimating a vehicle 3D pose using only visual images. This technique is becoming popular in AUVs for navigation, station keeping and the provision of a manipulator feedback information. Visual odometry output is often fused with Inertial Measurement Units (IMU) to provide a cheaper alternative to DVLs \cite{Hildebrandt2010} \cite{Dunbabin2004}. However, the limitations of underwater vision are widely known, and its performance depends on many factors such as visibility, lighting and distorsion resulting from varying refractive indices.
 
 In this paper we present the integration of two existing stereo visual odometry algorithms into an AUV, the experiments carried out in laboratory and harbour enviroments, as well as the evaluation method to compare the performance of both algorithms.
 
-First, the paper presents related works on visual odometry. Section \ref{visual-odometry-systems} describes the general concepts of visual odometry systems and presents a brief overview of the two analyzed algorithms (fovis and libviso2), followed by the explanation of the evaluation method in Section \ref{evaluation-method} and experiments in different eviroments. Finally, the conclusion ot the study and future prespectives are presented.
+First, the paper explains related works on visual odometry. Section \ref{visual-odometry-systems} describes the general concepts of visual odometry systems and presents a brief overview of the two analyzed algorithms (fovis and libviso2), followed by the explanation of the evaluation method in Section \ref{experiments} and experiments in different eviroments. Finally, the conclusion of the study and future prespectives are presented.
 
 \section{Related Work 
   \label{related-work}
 }
 
-The basic visual odometry algorithm pipeline \cite{Moravec1980} consists in identifying keypoints (landmarks) in each camera frame, extract the feature descriptors of these points, estimate the depth for every landmark (typically using stereo or rgb-d cameras), match features across time frames, and then estimate the rigid-body transformation that best aligns the features between frames. The result of this process is an estimation of  camera motion between frames, therefore it is necessary to integrate this data over the time to obtain the vehicle position and orientation.
+The basic visual odometry algorithm pipeline \cite{Moravec1980} consists, first, in identifying keypoints (landmarks) in each camera frame and extract the feature descriptors of these points. Then compute the depth for every landmark (typically using stereo or rgb-d cameras), match features across time frames and estimate the rigid-body transformation that best aligns the features between frames. The result of this process is an estimation of  camera motion between frames and, therefore it is necessary to integrate this data over the time to obtain the vehicle position and orientation.
 
-Visual odometers for AUVs tend to use this pipeline \cite{Botelho2009} and adapt every stage options (such us keypoint detector type and feature matching method) to they needs. Common feature detectors used for real-time visual odometry include Harris corners \cite{Harris1988,Nister2006}, FAST \cite{Rosten2006,Huang2011} or SIFT \cite{Lowe2004,Botelho2009} features, which have a low computation cost and are robust against small viewpoint changes. Wide range of approaches are involved in the process of matching feature across frames, \cite{Geiger2011} propose a circle match between stereo image pairs of two consecutive frames and uses non-maxima-suppression techniques \cite{Geiger2010} to reduce the number of correspondences. RANSAC-based methods \cite{Nister2004,Johnson2008} and graph-based consistency algorithms \cite{Howard2008} have also been proven to robustly match features across frames.
+Visual odometers for AUVs tend to use this pipeline \cite{Botelho2009} and adapt every stage options (such us keypoint detector type and feature matching method) to their needs. Common feature detectors used for real-time visual odometry include Harris corners \cite{Harris1988,Nister2006}, FAST \cite{Rosten2006,Huang2011} or SIFT \cite{Lowe2004,Botelho2009} features, which have a low computation cost and are robust against small viewpoint changes. Wide range of approaches are involved in the process of matching feature across frames, \cite{Geiger2011} propose a circle match between stereo image pairs of two consecutive frames and uses non-minima/maxima-suppression techniques \cite{Geiger2010} to reduce the number of correspondences. RANSAC-based methods \cite{Nister2004,Johnson2008} and graph-based consistency algorithms \cite{Howard2008} have also been proven to robustly match features across frames.
 
-Previous to the motion estimation stage, keypoint bucketing technique \cite{Zhang1995} has been shown to help reduce the inlier reprojection errors. Finally, motion estimation process can be solved through different methods. Using the closed-form solution to least-squares problem of absolute orientation \cite{Horn1987}, it is possible to directly minimize the Euclidean distance between matched features in order to compute the rigid-body transformation of the camera frame \cite{Huang2011}. Several ground-based visual odometers do not use 3D distances but implement the method of minimizing the pixel reprojection error \cite{Howard2008,Geiger2011}. 
+Previous to the motion estimation stage, keypoint bucketing \cite{Zhang1995} has been shown to help reduce the inlier reprojection errors. Finally, motion estimation process can be solved through different methods. Using the closed-form solution to least-squares problem of absolute orientation \cite{Horn1987}, it is possible to directly minimize the Euclidean distance between matched features in order to compute the rigid-body transformation of the camera frame \cite{Huang2011}. Several ground-based visual odometers do not use 3D distances but implement the method of minimizing the pixel reprojection error \cite{Howard2008,Geiger2011}. 
 
-Other AUVs localization algorithms are based on mosaics or structured enviroments and therefore assumes prior knowledge of the area to explore \cite{Garcia2001,Gracias2003,Carreras2003}.
+Other AUVs localization algorithms are based on mosaics or structured enviroments and therefore assume prior knowledge of the area to explore \cite{Garcia2001,Gracias2003,Carreras2003}.
 
-Many of the techniques and algorithms described in this section are primary focused on ground and aerial vehicles, however, most have not been tested in underwater environments. In this field, the complexity of the visual odometry task increases due to the dynamic light conditions and decreasing visibility with depth and turbity. Our focus is primarily on integrating and validating two different visual odometer approaches in such enviroments.
+Many of the techniques and algorithms described in this section are primary focused on ground and aerial vehicles, however most of them have not been tested in underwater environments. In this field, the complexity of the visual odometry task increases due to the dynamic light conditions and decreasing visibility with depth and turbity. Our focus is primarily on integrating and validating two different stereo-based visual odometry approaches in such enviroments.
 
 \section{Visual Odometry Systems
   \label{visual-odometry-systems}
@@ -273,7 +273,7 @@ Both algorithms use feature descriptors that are not invariant to rotation or sc
   \label{experiments}
 }
 
-The experiments carried out use data gathered during the TRIDENT project\footnote{See \url{http://www.irs.uji.es/trident/}} both in laboratory and harbour conditions using the Girona500 AUV \cite{Ribas2012} as vehicle (Figure \ref{g500}). This vehicle has been designed by the Universitat de Girona and, without change, does not have stereo vision system, but allows the mounting of external systems on the bottom. This featured is used to attach the stereo vision unit developed by our Group in the Universitat de les Illes Balears. This unit is called Fugu-Flexible, or Fugu-F to shorten, which is basically composed of two stereo rigs and a computer system. Each module, hardware and cameras, is placed in an independent sealed case rated for up to 100 meters depth. The main Fugu-F hardware specifications are:
+The experiments carried out use data gathered during the TRIDENT project\footnote{See \url{http://www.irs.uji.es/trident/}} both in laboratory and harbour conditions using the Girona500 AUV \cite{Ribas2012} as vehicle (Figure \ref{g500}). This vehicle has been designed by the Universitat de Girona and, without change, does not have stereo vision system, but allows the mounting of external systems on the bottom payload area. This featured is used to attach the stereo vision unit developed by our Group in the Universitat de les Illes Balears. This unit is called Fugu-Flexible, or Fugu-F to shorten, which is basically composed of two stereo rigs and a computer system. Each module, hardware and cameras, is placed in an independent sealed case rated for up to 100 meters depth. The main Fugu-F hardware specifications are:
 
 \begin{itemize}
   \item Two Bumblebee2 stereo cameras from Point Grey, one with a focal distance of 3.8mm (66\degree HFOV), and the other with 2.5mm (97\degree HFOV).
@@ -293,7 +293,7 @@ The experiments carried out use data gathered during the TRIDENT project\footnot
 %  \label{fugu-f}
 %\end{figure}
 
-Figure \ref{sample-images} shows some example images from the both laboratory and harbour enviroments. Ground truth for the laboratory experiment is extracted by matching each image that has been captured against the known image that is printed on the floor of the test pool. As the size of the print is known, 6 DOF camera poses can be computed minimizing reprojection errors of matched features.
+Figure \ref{sample-images} shows some example images from the laboratory and harbour enviroments. Ground truth for the laboratory experiment is extracted by matching each image that has been captured against the known image that is printed on the floor of the test pool. As the size of the print is known, 6 DOF camera poses can be computed minimizing reprojection errors of matched features.
 
 \begin{figure}
   \noindent\makebox[\linewidth][c]{\includegraphics[width=1.000\linewidth]{images/sample_images.jpg}}
@@ -339,7 +339,7 @@ The results presented in Table \ref{results-errors} demostrates that libviso2 ha
 
 Results for fovis odometer are substantially different in translation error comparing laboratory and harbour conditions. By examining the number of inliers of the two odometers shown in Table \ref{results-runtime} it is easy to see that fovis is significantly less robust in harbour enviroments where the quality of the images is lower (see Figure \ref{sample-images}). Furthermore, unlike libviso2, fovis presents a better performance when estimating the angular motion in harbour conditions. This improvement over libviso2 is due to the method of keyframe selection based on the number of matches introduced by fovis. This technique has a positive impact when the vehicle experiences pure rotational movements, as it can keep the reference frame for longer and therefore reduce the drift significally.
 
-Runtime column shown in Table \ref{results-runtime} indicates the mean algorithm execution time per frame. For both libviso2 and fovis odometers the runtime is clearly related to the number of inliers to be processed by the motion estimation algorithm, thus large number of inliers increases processing time.
+The runtime column shown in Table \ref{results-runtime} indicates the mean algorithm execution time per frame. For both libviso2 and fovis odometers the runtime is clearly related to the number of inliers to be processed by the motion estimation algorithm, thus large number of inliers increases processing time.
 
 \begin{figure*}
   \begin{center}
@@ -351,8 +351,8 @@ Runtime column shown in Table \ref{results-runtime} indicates the mean algorithm
     }
     \subfloat[]{
       \begin{tabular}{c}
-        \includegraphics[width=0.45\linewidth]{aux/viso2-cirs-timefixed-run3-vyaw.pdf}\\
-        \includegraphics[width=0.45\linewidth]{aux/viso2-roses-vyaw.pdf}
+        \includegraphics[width=0.45\linewidth]{aux/viso2-cirs-timefixed-run3-vyaw-err.pdf}\\
+        \includegraphics[width=0.45\linewidth]{aux/viso2-roses-vyaw-err.pdf}
       \end{tabular}
     }
   \end{center}
@@ -370,8 +370,8 @@ Runtime column shown in Table \ref{results-runtime} indicates the mean algorithm
     }
     \subfloat[]{
       \begin{tabular}{c}
-        \includegraphics[width=0.45\linewidth]{aux/fovis-cirs-timefixed-run3-vyaw.pdf}\\
-        \includegraphics[width=0.45\linewidth]{aux/fovis-roses-vyaw.pdf}
+        \includegraphics[width=0.45\linewidth]{aux/fovis-cirs-timefixed-run3-vyaw-err.pdf}\\
+        \includegraphics[width=0.45\linewidth]{aux/fovis-roses-vyaw-err.pdf}
       \end{tabular}
     }
   \end{center}
@@ -414,9 +414,9 @@ Runtime column shown in Table \ref{results-runtime} indicates the mean algorithm
 Visual odometry is a method for motion estimation that gives good results using a low-cost sensor in reasonable conditions. We presented open source wrappers for two publicly available visual odometry algorithms to the community that ease the integration into existing robotic platforms.
 We have shown that these algorithms can be used in an underwater environment if both the visibility conditions and the appearance of the sea floor result in images with sufficient texture. Like all incremental motion estimation methods, visual odometry suffers from drift and has to be combined with other sensors to get precise long-term position estimates. Apart from that, failure might occur in situations with insufficient texture, motion blur, or bad visibility.
 
-Despite the mentioned drawbacks we have shown that a visual odometer using a downward looking stereo camera can be a valuable sensor for underwater vehicles giving good estimates for linear movement and rotation about the vehicle's vertical axis.
+Despite the mentioned drawbacks we have shown that a visual odometer using a downward looking stereo camera can be a valuable sensor for underwater vehicles giving good estimates for linear movement and rotation about the vehicle's vertical axis. Comparing the performance of libviso2 and fovis in underwater enviroments, libviso2 is preferible when the vehicle operates in real marine waters with critical lighting conditions and slightly textured seabed. The robustness of this algorithm against poor visibility contrasts with the fact of having a worse rotation estimation when compared with fovis in harbour experiments.
 
-TODO Complete with experiment results.
+A possible improvement for the angular motion estimation in libviso2 could be the implementation of the reference frame selection technique developed by fovis algorithm. This method could substancialy reduce the drift in both linear and angular estimates.
 
 % references section
 \bibliographystyle{IEEEtran}
