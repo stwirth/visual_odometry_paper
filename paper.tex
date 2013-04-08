@@ -200,7 +200,7 @@ The basic visual odometry algorithm pipeline \cite{Moravec1980} consists of the 
 
 Many implementations of visual odometers for AUVs use this pipeline and adapt every stage (such us keypoint detector type and feature matching method) to their needs. Common feature detectors used for real-time visual odometry include Harris corners \cite{Harris1988,Nister2006}, FAST \cite{Rosten2006,Huang2011} or SIFT \cite{Lowe2004,Botelho2009} features. Wide range of approaches are involved in the process of matching feature across frames, \cite{Geiger2011} propose a circle match between stereo image pairs of two consecutive frames and uses non-minima/maxima-suppression techniques \cite{Geiger2010} to reduce the number of correspondences. RANSAC-based methods \cite{Nister2004,Johnson2008} and graph-based consistency algorithms \cite{Howard2008} have also been proven to robustly match features across frames.
 
-Previous to the motion estimation stage, keypoint bucketing \cite{Zhang1995} has been shown to help reduce the inlier reprojection errors. Finally, the motion estimation process can be solved through different methods. Using a closed-form solution to the least-squares problem of absolute orientation \cite{Horn1987}, it is possible to directly minimize the Euclidean distance between matched features in order to compute the rigid-body transformation of the camera frame \cite{Huang2011}. Several ground-based visual odometers do not use 3D distances but implement the method of minimizing the pixel reprojection error \cite{Howard2008,Geiger2011,Huan2011}. 
+Previous to the motion estimation stage, keypoint bucketing \cite{Zhang1995} has been shown to help reduce the inlier reprojection errors. Finally, the motion estimation process can be solved through different methods. Using a closed-form solution to the least-squares problem of absolute orientation \cite{Horn1987}, it is possible to directly minimize the Euclidean distance between matched features in order to compute the rigid-body transformation of the camera frame \cite{Huang2011}. Several ground-based visual odometers do not use 3D distances but implement the method of minimizing the pixel reprojection error \cite{Howard2008,Geiger2011,Huang2011}. 
 
 Other localization algorithms are for AUVs are based on mosaics or structured environments and therefore assume prior knowledge of the area to explore \cite{Garcia2001,Gracias2003,Carreras2003}.
 
@@ -293,7 +293,7 @@ The experiments carried out use data gathered during the TRIDENT project\footnot
 %  \label{fugu-f}
 %\end{figure}
 
-Figure \ref{sample-images} shows some example images from the laboratory and harbour enviroments. Ground truth for the laboratory experiment is extracted by matching each image that has been captured against the known image that is printed on the floor of the test pool. As the size of the print is known, 6 DOF camera poses can be computed minimizing reprojection errors of matched features.
+Figure \ref{sample-images} shows some example images from the laboratory and harbour environments. Ground truth for the laboratory experiment is extracted by matching each image that has been captured against the known image that is printed on the floor of the test pool. As the size of the print is known, 6 DOF camera poses can be computed minimizing reprojection errors of matched features.
 
 \begin{figure}
   \noindent\makebox[\linewidth][c]{\includegraphics[width=1.000\linewidth]{images/sample_images.jpg}}
@@ -303,7 +303,7 @@ Figure \ref{sample-images} shows some example images from the laboratory and har
 
 For the harbour experiment, the determination of ground truth is more difficult, as no external sensors have been used and positions of natural landmarks are not known. One aim of the project was the offline construction of a consistent seabed mosaic (see \cite{Ferrer2007}). The computation of this mosaic includes global optimization of all camera poses. The resulting trajectory does not suffer from drift and is therefore chosen as our ground truth reference.
 
-In the harbour experiment, a DVL and an AHS (Airborne Hyperspectral Scanner) have been used as navigation sensors to let the vehicle follow a previously defined trajectory autonomously. In the laboratory experiments, the vehicle has been remotely controlled by a human operator. Table \ref{experiment-details} summarizes the characteristics of the experiments.
+In the harbour experiment, a DVL and an AHRS have been used as navigation sensors to let the vehicle follow a previously defined trajectory autonomously. In the laboratory experiments, the vehicle has been remotely controlled by a human operator. Table \ref{experiment-details} summarizes the characteristics of the experiments.
 
 \begin{table}[!t]
   \renewcommand{\arraystretch}{1.3}
@@ -325,19 +325,19 @@ The AUV was configured to not control pitch, roll and sway. Motions in these deg
   \label{evaluation-method}
 }
 
-As visual odometry suffers from drift, comparing whole trajectories, i.e. poses in time directly to ground truth is not very meaningful. Instead, we subdivide the paths into small pieces and compare velocities for each piece to the matching piece in our ground truth. This method is widely used in visual odometry evaluation \cite{Kitti2013} and depends clearly on the size of the subpaths. However, since it is used to compare different visual odometers, the important thing here is to be coherent with the size of the pieces for all algorithms.
+As visual odometry suffers from drift, comparing whole trajectories, i.e. poses in time directly to ground truth is not very meaningful. Instead, we subdivide the paths into small pieces and compare velocities for each piece to the matching piece in our ground truth. This method is widely used in visual odometry evaluation \cite{Kitti2013} and depends clearly on the size of the sub-paths. However, since it is used to compare different visual odometers, the important thing here is to be coherent with the size of the pieces for all algorithms.
 
 \subsection{Results
   \label{results}
 }
 
-A comparison of linear velocity estimates to ground truth can be found in Figure \ref{error-plots-viso2} for libviso2 and \ref{error-plots-fovis} for fovis. Upper graphics refer to experiments in laboratory while the bottom ones refer to harbour tests. Linear velocity is shown on the left for both odometry estimation (blue) and ground truth (green), together with its error drawn in red. Finally, on right plot, a comparison of angular velocity for odometry estimation (blue) and grund truth (green) is also presented. No differences can be highlighted comparing angular velocity error for libviso2 and fovis in both the laboratory and harbour conditions. However, when linear velocities are examined, fovis presents better performance when executed in laboratory enviroment.
+A comparison of linear velocity estimates to ground truth can be found in Figure \ref{error-plots-viso2} for libviso2 and \ref{error-plots-fovis} for fovis. Upper graphics refer to experiments in laboratory while the bottom ones refer to harbour tests. Linear velocity is shown on the left for both odometry estimation (blue) and ground truth (green), together with its error drawn in red. Finally, on right plot, a comparison of angular velocity for odometry estimation (blue) and ground truth (green) is also presented. No differences can be highlighted comparing angular velocity error for libviso2 and fovis in both the laboratory and harbour conditions. However, when linear velocities are examined, fovis presents better performance when executed in laboratory environment.
 
 These results are summarized in Table \ref{results-errors} for laboratory and harbour experiments. The translation column indicates the mean average translation error that suffers the odometer in percent, which is the number of meters diverted for every 100 meters of trajectory. Furthermore, the rotation column indicates how many degrees the odometer is deviated per meter, relative to ground truth.
 
-The results presented in Table \ref{results-errors} demostrates that libviso2 has similar mean translation error for both enviroments, but differs significantly in rotation error. By refering to Table \ref{results-runtime}, the mean number of inliers per frame is larger in the laboratory than in the harbour (where environmental conditions are worse). It means libviso2 presents a strong performance in the linear motion estimation when the number of inliers is reduced.
+The results presented in Table \ref{results-errors} demonstrates that libviso2 has similar mean translation error for both environments, but differs significantly in rotation error. As can be seen in Table \ref{results-runtime}, the mean number of inliers per frame is larger in the laboratory than in the harbour (where environmental conditions are worse). It means libviso2 presents a strong performance in the linear motion estimation even when the number of inliers is small.
 
-Results for fovis odometer are substantially different in translation error comparing laboratory and harbour conditions. By examining the number of inliers of the two odometers shown in Table \ref{results-runtime} it is easy to see that fovis is significantly less robust in harbour enviroments where the quality of the images is lower and the seabed has a poor texture (see Figure \ref{sample-images}). Furthermore, unlike libviso2, fovis presents a better performance when estimating the angular motion in harbour conditions. This improvement over libviso2 is due to the method of keyframe selection based on the number of matches introduced by fovis. This technique has a positive impact when the vehicle experiences pure rotational movements, as it can keep the reference frame for longer and therefore reduce the drift significally.
+Results for the fovis odometer are substantially different in translation error comparing laboratory and harbour conditions. By examining the number of inliers of the two odometers shown in Table \ref{results-runtime} it is easy to see that fovis is significantly less robust in harbour environments where the quality of the images is lower and the seabed has a poor texture (see Figure \ref{sample-images}). Furthermore, unlike libviso2, fovis presents a better performance when estimating the angular motion in harbour conditions. This improvement over libviso2 is due to the method of keyframe selection based on the number of matches introduced by fovis. This technique has a positive impact when the vehicle experiences pure rotational movements, as it can keep the reference frame for longer and therefore reduce the drift significantly.
 
 The runtime column shown in Table \ref{results-runtime} indicates the mean algorithm execution time per frame. For both libviso2 and fovis odometers the runtime is clearly related to the number of inliers to be processed by the motion estimation algorithm, thus large number of inliers increases processing time.
 
@@ -385,7 +385,7 @@ The runtime column shown in Table \ref{results-runtime} indicates the mean algor
   \label{results-errors}
   \centering
   \begin{tabular}{|l|l|c|c|} \hline
-    \textbf{Enviroment} & \textbf{Algorithm} & \textbf{Translation} & \textbf{Rotation}\\ \hline
+    \textbf{Environment} & \textbf{Algorithm} & \textbf{Translation} & \textbf{Rotation}\\ \hline
     \multirow{2}{*}{Laboratory} & libviso2 & 0.978\% & 0.001739 [deg/m] \\
                                 & fovis    & 0.601\% & 0.006311 [deg/m] \\ \hline
     \multirow{2}{*}{Harbour}    & libviso2 & 0.833\% & 0.007913 [deg/m] \\
@@ -395,11 +395,11 @@ The runtime column shown in Table \ref{results-runtime} indicates the mean algor
 
 \begin{table}[!t]
   \renewcommand{\arraystretch}{1.3}
-  \caption{Comparison of number of inliear and runtime for laboratory and harbour experiments.}
+  \caption{Comparison of number of inliers and runtime for laboratory and harbour experiments.}
   \label{results-runtime}
   \centering
   \begin{tabular}{|l|l|c|c|} \hline
-    \textbf{Enviroment} & \textbf{Algorithm} & \textbf{Num. inliers} & \textbf{Runtime}\\ \hline
+    \textbf{Environment} & \textbf{Algorithm} & \textbf{Num. inliers} & \textbf{Runtime}\\ \hline
     \multirow{2}{*}{Laboratory} & libviso2 & 366 & 0.106 [s] \\
                                 & fovis    & 500 & 0.246 [s] \\ \hline
     \multirow{2}{*}{Harbour}    & libviso2 & 137 & 0.086 [s] \\
@@ -414,15 +414,15 @@ The runtime column shown in Table \ref{results-runtime} indicates the mean algor
 Visual odometry is a method for motion estimation that gives good results using a low-cost sensor in reasonable conditions. We presented open source wrappers for two publicly available visual odometry algorithms to the community that ease the integration into existing robotic platforms.
 We have shown that these algorithms can be used in an underwater environment if both the visibility conditions and the appearance of the sea floor result in images with sufficient texture. Like all incremental motion estimation methods, visual odometry suffers from drift and has to be combined with other sensors to get precise long-term position estimates. Apart from that, failure might occur in situations with insufficient texture, motion blur, or bad visibility.
 
-Despite the mentioned drawbacks we have shown that a visual odometer using a downward looking stereo camera can be a valuable sensor for underwater vehicles giving good estimates for linear movement and rotation about the vehicle's vertical axis. Comparing the performance of libviso2 and fovis in underwater enviroments, libviso2 is preferible when the vehicle operates in real marine waters with critical lighting conditions and slightly textured seabed. The robustness of this algorithm against poor visibility contrasts with the fact of having a worse rotation estimation when compared with fovis in harbour experiments.
+Despite the mentioned drawbacks we have shown that a visual odometer using a downward looking stereo camera can be a valuable sensor for underwater vehicles giving good estimates for linear movement and rotation about the vehicle's vertical axis. Comparing the performance of libviso2 and fovis in underwater environments, libviso2 is preferable when the vehicle operates in real marine waters with critical lighting conditions and slightly textured seabed. The robustness of this algorithm against poor visibility contrasts with the fact of having a worse rotation estimation when compared with fovis in harbour experiments.
 
-A possible improvement for the angular motion estimation in libviso2 could be the implementation of the reference frame selection technique developed by fovis algorithm. This method could substancialy reduce the drift in both linear and angular estimates.
+A possible improvement for the angular motion estimation in libviso2 could be the implementation of the reference frame selection technique developed by fovis algorithm. This method could substantially reduce the drift in both linear and angular estimates.
 
 \section{Acknowledgment
   \label{acknowledgment}
 }
 
-This work is partially supported by the Spanish Ministry of Economy and Competitiveness under contract DPI2011-27977-C03- 02 (TRITON Project), FEDER Fundings and by the European Commissions FP7 under grant agreement 248497 (TRIDENT Project).
+This work is partially supported by the Spanish Ministry of Economy and Competitiveness under contract DPI2011-27977-C03-02 (TRITON Project), FEDER Fundings and by the European Commissions FP7 under grant agreement 248497 (TRIDENT Project).
 
 % references section
 \bibliographystyle{IEEEtran}
